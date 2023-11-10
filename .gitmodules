@@ -4,7 +4,8 @@
 [submodule "ontobrapi-admin"]
 	branch = main
 	path = ontobrapi-admin
-	url = https://github.com/forestbiotech-lab/ontobrapi-admin.git
+	url = git@github.com:forestbiotech-lab/ontobrapi-admin.git
 [submodule "ontobrapi-brapi"]
+	path = ontobrapi-brapi
 	url = git@github.com:forestbiotech-lab/ontobrapi-brapi.git
 	branch = master
