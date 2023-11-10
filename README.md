@@ -31,7 +31,8 @@ git clone http://github.com/forestbiotech-lab/ontoBrAPI.git
 cd ontoBrapi
 cd ontoBrapi-node-docker
 git submodule init
-git submodule set-url https://github.com/forestbiotech-lab/ontoBrAPI-node-docker.git
+#git submodule set-url [repo] [repo-url]
+git submodule set-url ontoBrAPI-node-docker  https://github.com/forestbiotech-lab/ontoBrAPI-node-docker.git
 git checkout master
 ``` 
 
