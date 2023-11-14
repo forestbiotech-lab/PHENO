@@ -20,7 +20,6 @@ Clone repo and init Submodules, replace repository url based on the access to th
 ``` bash
 git clone git@github.com:forestbiotech-lab/ontoBrAPI.git
 cd ontoBrapi
-cd ontoBrapi-node-docker
 git submodule init
 git submodule update
 git checkout master
@@ -29,11 +28,13 @@ git checkout master
 ``` bash
 git clone http://github.com/forestbiotech-lab/ontoBrAPI.git
 cd ontoBrapi
-cd ontoBrapi-node-docker
 git submodule init
+
 #git submodule set-url [repo] [repo-url]
+#Do this for every repo in submodules
 git submodule set-url ontoBrAPI-node-docker  https://github.com/forestbiotech-lab/ontoBrAPI-node-docker.git
 git checkout master
+(...)
 ``` 
 
 Build / Rebuild web module container (First run)
