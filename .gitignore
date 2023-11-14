@@ -105,3 +105,6 @@ dist
 
 # Apple tracking files
 .DS_Store
+
+#Excludes Virtuso DB
+data/virtuoso/*
