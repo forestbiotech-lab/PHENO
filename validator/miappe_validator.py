@@ -1,7 +1,7 @@
 # Script to read and validate input MIAPPE Compliant Excel file.
 
 # Read required packages
-import numpy as np
+
 import pandas as pd
 import sys
 # Check script execution time
