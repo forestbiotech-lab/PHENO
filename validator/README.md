@@ -10,3 +10,9 @@ The validator runs in a docker based on a python image, to ensure no issues with
 The struture of the validator is a series of methods that progressively check the file. However only the 2 first have been verified. The previous execution exit would not be viable as it would kill the webserver. Suggestion is to define a can continue parameter in self that is checked in all the validation methods. 
 
 
+To test the server with the following file: 
+```bash
+ curl -X POST "localhost:3004" -H 'Content-Type: application/json' -d '{"file":"external/valores de Cópia de MIAPPEv1.1_compliant_vitis_submissionOntobrapi.xlsx"}
+```
+
+ 
