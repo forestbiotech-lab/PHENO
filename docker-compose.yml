@@ -51,6 +51,17 @@ services:
       networks:
         - backend
 
+  validator:
+     build: ./validator
+     ports:
+       - "3004:8080"
+     volumes:
+       - ./ontoBrAPI-node-docker/uploads/uploadedfiles:/usr/src/app/external   
+     depends_on:
+       - web
+     networks:
+       - backend
+
   #cache:
   #image:mongoDB 
 
