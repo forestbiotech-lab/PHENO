@@ -1,0 +1,7 @@
+   --- OntoBrAPI - Input File Validity Report ---   
+CHECK PASSED - Valid input file extension
+CHECK FAILED - The input file contains invalid sheet names.
+CHECK PASSED - The Investigation sheet has a valid header (column name/number).
+CHECK FAILED - The Investigation sheet has a invalid format (some fields are incorrectly formated).
+CHECK PASSED - The Investigation sheet has no duplicate Investigation unique IDs.
+ - THE INPUT FILE IS VALID - 
