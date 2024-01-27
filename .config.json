@@ -5,5 +5,9 @@
     "host": "db",
     "port": "8890",
     "ontoBrAPIgraph": "http://localhost:8890/ontobrapi"
+  },
+  "validator":{
+    "hostname":"validator",
+    "port":"8080",  
   }
 }
