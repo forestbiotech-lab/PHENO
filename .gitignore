@@ -108,3 +108,7 @@ dist
 
 #Excludes Virtuso DB
 data/virtuoso/*
+
+
+#Webstrom
+.idea/
