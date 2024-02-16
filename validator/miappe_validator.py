@@ -15,7 +15,7 @@ class Miappe_validator:
 #   ---   Initiate class properties and check Input File extension  ---
     
     def __init__(self, input_file):
-        self.logs = ["   --- OntoBrAPI - Input File Validity Report ---   "]
+        self.logs = ["  --- Hello OntoBrAPI - Input File Validity Report ---  "]
         self.run = True
         # Loads file
         self.input_file = input_file
