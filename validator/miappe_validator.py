@@ -6,17 +6,17 @@ import sys
 # Check script execution time
 from datetime import datetime
 
-
 startTime = datetime.now()
 
+#   ---   Define a Miappe_validator Class   ---
 
-#   ---   Functions   ---
-
-#  -  Check Input File extension, sheet number and sheet names  -
 class Miappe_validator:
 
+#   ---   Initiate class properties and check Input File extension  ---
+    
     def __init__(self, input_file):
         self.logs = ["   --- OntoBrAPI - Input File Validity Report ---   "]
+        self.run = True
         # Loads file
         self.input_file = input_file
         try:
@@ -26,9 +26,14 @@ class Miappe_validator:
                 self.sheetsList = self.complete_excel.sheet_names
             else:
                 self.logs.append("CHECK FAILED - Invalid input file extension")
+                self.run = False
         except FileNotFoundError:
             self.logs = ["CHECK FAILED - Invalid input file"]
+            self.run = False
 
+
+    #  -  Check sheet number & sheet names  -
+            
     def check_input_file(self):
         # These are all valid sheet names for a MIAPPE compliant excel file
         valid_sheet_names = ["Investigation", "Study", "Person", "Data file", "Biological Material", "Sample",
@@ -42,8 +47,7 @@ class Miappe_validator:
                 self.logs.append("CHECK WARNING - The input file does not have 11 sheets.")
         else:
             self.logs.append("CHECK FAILED - The input file contains invalid sheet names.")
-
-            ###sys.exit(" - ERROR - Invalid Sheet Names in Input File - ")
+            self.run = False
 
 
     #  -  Check Investigation Sheet  -
@@ -63,7 +67,7 @@ class Miappe_validator:
                 self.logs.append("CHECK PASSED - The Investigation sheet has a valid header (column name/number).")
             else:
                 self.logs.append("CHECK FAILED - The Investigation sheet has an invalid header (column name/number).")
-                ###sys.exit(" - ERROR - Invalid Header in Investigation Sheet - ")
+                self.run = False
 
             # Cleaning "\n" characters from the dataframe
             self.sheet_df.replace({'\n': ''}, regex=True)
@@ -79,7 +83,7 @@ class Miappe_validator:
             else:
                 self.logs.append(
                     "CHECK FAILED - The Investigation sheet has a invalid format (some fields are incorrectly formated).")
-                ##sys.exit(" - ERROR - Invalid Field Formats in Investigation Sheet - ")
+                self.run = False
 
             # Check if the Investigation unique ID holds unique values
 
@@ -89,22 +93,21 @@ class Miappe_validator:
             else:
                 self.logs.append(
                     "CHECK FAILED - The Investigation sheet has duplicate Investigation unique IDs (they should be unique).")
-                ##sys.exit(" - ERROR - Duplicate Investigation Unique IDs found in the Investigation Sheet - ")
-
-
+                self.run = False
 
 
         except ValueError:
             self.logs.append("CHECK FAILED - The Investigation sheet cannot be opened.")
+            self.run = False
 
 
     #  -  Check Study Sheet  -
 
-    def CheckStudySheet(input_file, logs):
+    def CheckStudySheet(self):
         # Check Study Sheet Header
-        sheet_df = pd.read_excel(input_file, 'Study')
+        self.sheet_df = pd.read_excel(self.input_file, 'Study')
         # Remove '*' characters, which indicate mandatory columns to fill
-        study_header = [ele.replace('*', '') for ele in list(sheet_df)]
+        study_header = [ele.replace('*', '') for ele in list(self.sheet_df)]
 
         # Valid Study sheet Headers:
         valid_study_header1 = ["Study unique ID", "Study title", "Study description", "Start date of study",
@@ -125,10 +128,10 @@ class Miappe_validator:
                                "Map of experimental design"]
 
         if study_header == valid_study_header1 or study_header == valid_study_header2:
-            logs.append("CHECK PASSED - The Study sheet has a valid header (column name/number).")
+            self.logs.append("CHECK PASSED - The Study sheet has a valid header (column name/number).")
         else:
-            logs.append("CHECK FAILED - The Study sheet has an invalid header (column name/number).")
-            ##sys.exit(" - ERROR - Invalid Header in Study Sheet - ")
+            self.logs.append("CHECK FAILED - The Study sheet has an invalid header (column name/number).")
+            self.run = False
 
 
     #  -  Check Person Sheet  -
@@ -405,10 +408,12 @@ class Miappe_validator:
 
     def run_miappe_validator(self):
 
-        self.check_input_file()
-        self.CheckInvestigationSheet()
-
-        #CheckStudySheet()
+        if self.run == True:
+            self.check_input_file()
+        if self.run == True:
+            self.CheckInvestigationSheet()
+        if self.run == True:
+            self.CheckStudySheet()
         #CheckPersonSheet()
         #CheckDatafileSheet()
         #CheckBiologicalMaterialSheet()
@@ -419,8 +424,9 @@ class Miappe_validator:
         #CheckSampleSheet(input_file, logs)
 
         # Write miappe_validator_logs file:
-
-        self.logs.append(" - THE INPUT FILE IS VALID - ")
+        # Append File is Valid if self.run reaches the end as True
+        if self.run == True:
+            self.logs.append(" - THE INPUT FILE IS VALID - ")
 
         with open(r'miappe_validator_logs.txt', 'w') as log:
             for item in self.logs:
