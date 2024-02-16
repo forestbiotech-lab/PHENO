@@ -15,7 +15,7 @@ class Miappe_validator:
 #   ---   Initiate class properties and check Input File extension  ---
     
     def __init__(self, input_file):
-        self.logs = ["  --- Hello OntoBrAPI - Input File Validity Report ---  "]
+        self.logs = ["  --- OntoBrAPI - Input File Validity Report ---  "]
         self.run = True
         # Loads file
         self.input_file = input_file
@@ -39,15 +39,18 @@ class Miappe_validator:
         valid_sheet_names = ["Investigation", "Study", "Person", "Data file", "Biological Material", "Sample",
                              "Observation Unit", "Environment", "Factor", "Observed Variable", "Event"]
 
-        if set(self.sheetsList) <= set(valid_sheet_names):
+        # Check the number of input sheet names that are valid or not
+        self.valid_sheets = [i for i in self.sheetsList if i in valid_sheet_names]
+        if len(self.valid_sheets) < 11:
+            self.logs.append(
+                    "CHECK FAILED - The input file has " + str(len(self.valid_sheets)) + " valid input sheets, which is less than the minimum 11 valid sheets required: Investigation, Study, Person, Data file, Biological Material, Sample, Observation Unit, Environment, Factor, Observed Variable, Event")
+        else:
             if len(self.sheetsList) == 11:
                 self.logs.append(
-                    "CHECK PASSED - The " + str(len(self.sheetsList)) + " sheet names of the excel input file are valid.")
+                    "CHECK PASSED - The input file has the minimum required 11 valid sheet names.")
             else:
-                self.logs.append("CHECK WARNING - The input file does not have 11 sheets.")
-        else:
-            self.logs.append("CHECK FAILED - The input file contains invalid sheet names.")
-            self.run = False
+                self.logs.append(
+                    "CHECK WARNING - The input file has " + str(len(self.sheetsList)) + " sheets, which is more than the minimum 11 valid sheets required. Additional sheets may be discarded.")
 
 
     #  -  Check Investigation Sheet  -
@@ -427,6 +430,8 @@ class Miappe_validator:
         # Append File is Valid if self.run reaches the end as True
         if self.run == True:
             self.logs.append(" - THE INPUT FILE IS VALID - ")
+        else:
+            self.logs.append(" - THE INPUT FILE IS INVALID - ")
 
         with open(r'miappe_validator_logs.txt', 'w') as log:
             for item in self.logs:
