@@ -15,7 +15,7 @@ class MyServer(BaseHTTPRequestHandler):
         self.wfile.write(bytes("<html><head><title>https://pythonbasics.org</title></head>", "utf-8"))
         self.wfile.write(bytes("<p>Request: %s</p>" % self.path, "utf-8"))
         self.wfile.write(bytes("<body>", "utf-8"))
-        self.wfile.write(bytes("<p>This is an example web server.</p>", "utf-8"))
+        self.wfile.write(bytes("<p>This web server only serves post requests</p>", "utf-8"))
         self.wfile.write(bytes("</body></html>", "utf-8"))
 
     def get_body(self):
@@ -24,13 +24,17 @@ class MyServer(BaseHTTPRequestHandler):
 
     def do_POST(self):
         body = json.loads(self.get_body())
-        logs = mv(body['file']).run_miappe_validator()
+        self.logs = []
+        try:
+            self.logs = mv(body['file']).run_miappe_validator()
+        except Exception as e:
+            self.logs.append(str(e))
         self.send_response(200)
         self.send_header("Content-type", "text/html")
         self.end_headers()
         self.wfile.write(bytes("<html><head><title>OntoBrapi Validator</title></head>", "utf-8"))
         self.wfile.write(bytes("<body><p>", "utf-8"))
-        for logLine in logs:
+        for logLine in self.logs:
             self.wfile.write(bytes(logLine, "utf-8"))
             self.wfile.write(bytes("<br>", "utf-8"))
         self.wfile.write(bytes("</p></body></html>", "utf-8"))

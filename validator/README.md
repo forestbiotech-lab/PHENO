@@ -12,7 +12,7 @@ The struture of the validator is a series of methods that progressively check th
 
 To test the server with the following file: 
 ```bash
- curl -X POST "localhost:3004" -H 'Content-Type: application/json' -d '{"file":"external/valores de Cópia de MIAPPEv1.1_compliant_vitis_submissionOntobrapi.xlsx"}
+ curl -X POST "localhost:3004" -H 'Content-Type: application/json' -d '{"file":"external/valores de Cópia de MIAPPEv1.1_compliant_vitis_submissionOntobrapi.xlsx"}'
 ```
 
  
