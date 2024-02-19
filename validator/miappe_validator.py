@@ -78,9 +78,17 @@ class Miappe_validator:
             # Check Investigation field formats per column
             investigation_format = self.sheet_df.dtypes
 
-            valid_investigation_format = "[dtype('O'), dtype('O'), dtype('O'), dtype('<M8[ns]'), dtype('<M8[ns]'), dtype('O'), dtype('float64'), dtype('float64')]"
+            self.logs.append(investigation_format)
 
-            if str(list(investigation_format)) == valid_investigation_format:
+            # Mandatory fields must have valid formats, while the rest can be empty ('float64')
+            valid_investigation_format1 = "[dtype('O'), dtype('O'), dtype('O'), dtype('float64'), dtype('float64'), dtype('O'), dtype('float64'), dtype('float64')]"
+            # Check if optional dates have correct format ('<M8[ns]')
+            valid_investigation_format2 = "[dtype('O'), dtype('O'), dtype('O'), dtype('<M8[ns]'), dtype('<M8[ns]'), dtype('O'), dtype('float64'), dtype('O')]"
+            # Someting wrong with dates being interpreted as object
+            # Check if optional dates have correct format ('<M8[ns]')
+            valid_investigation_format3 = "[dtype('O'), dtype('O'), dtype('O'), dtype('O'), dtype('O'), dtype('O'), dtype('float64'), dtype('float64')]"
+
+            if str(list(investigation_format)) == valid_investigation_format1 or str(list(investigation_format)) == valid_investigation_format2 or str(list(investigation_format)) == valid_investigation_format3:
                 self.logs.append(
                     "CHECK PASSED - The Investigation sheet has a valid format (properly formated fields).")
             else:
