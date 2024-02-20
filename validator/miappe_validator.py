@@ -95,10 +95,10 @@ class Miappe_validator:
 
             if str(list(investigation_format)) in valid_investigation_formats:
                 self.logs.append(
-                    "CHECK PASSED - The Investigation sheet has a valid format (properly formated fields).")
+                    "CHECK PASSED - The Investigation sheet has a valid format (properly formatted fields).")
             else:
                 self.logs.append(
-                    "CHECK FAILED - The Investigation sheet has a invalid format (some fields are incorrectly formated).")
+                    "CHECK FAILED - The Investigation sheet has a invalid format (some fields are incorrectly formatted).")
                 self.run = False
 
             # Check if the Investigation unique ID holds unique values
@@ -200,9 +200,9 @@ class Miappe_validator:
             # Format 2 - All fields are filled ('O')
 
             if str(list(person_format)) in valid_person_formats:
-                self.logs.append("CHECK PASSED - The Person sheet has a valid format (properly formated fields).")
+                self.logs.append("CHECK PASSED - The Person sheet has a valid format (properly formatted fields).")
             else:
-                self.logs.append("CHECK FAILED - The Person sheet has a invalid format (some fields are incorrectly formated).")
+                self.logs.append("CHECK FAILED - The Person sheet has a invalid format (some fields are incorrectly formatted).")
                 self.run = False
                 #sys.exit(" - ERROR - Invalid Field Formats in Person Sheet - ")
 
@@ -242,9 +242,9 @@ class Miappe_validator:
             # Format 2 - Data file version can be a float ('float64')
 
             if str(list(datafile_format)) in valid_datafile_formats:
-                self.logs.append("CHECK PASSED - The Data File sheet has a valid format (properly formated fields).")
+                self.logs.append("CHECK PASSED - The Data File sheet has a valid format (properly formatted fields).")
             else:
-                self.logs.append("CHECK FAILED - The Data File sheet has a invalid format (some fields are incorrectly formated).")
+                self.logs.append("CHECK FAILED - The Data File sheet has a invalid format (some fields are incorrectly formatted).")
                 self.run = False
                 #sys.exit(" - ERROR - Invalid Field Formats in Data File Sheet - ")
 
@@ -300,10 +300,10 @@ class Miappe_validator:
             # Format 4 - Vitis file
 
             if str(list(biomaterial_format)) in valid_biomaterial_formats:
-                self.logs.append("CHECK PASSED - The Biological Material sheet has a valid format (properly formated fields).")
+                self.logs.append("CHECK PASSED - The Biological Material sheet has a valid format (properly formatted fields).")
             else:
                 self.logs.append(
-                    "CHECK FAILED - The Biological Material sheet has a invalid format (some fields are incorrectly formated).")
+                    "CHECK FAILED - The Biological Material sheet has a invalid format (some fields are incorrectly formatted).")
                 self.run = False
                 #sys.exit(" - ERROR - Invalid Field Formats in Biological Material Sheet - ")
 
@@ -406,9 +406,9 @@ class Miappe_validator:
                 # Format 6 - Equal to 3 but date is interpreted as object ('O')
 
                 if str(list(event_format)) in valid_event_formats:
-                    self.logs.append("CHECK PASSED - The Event sheet has a valid format (properly formated fields).")
+                    self.logs.append("CHECK PASSED - The Event sheet has a valid format (properly formatted fields).")
                 else:
-                    self.logs.append("CHECK FAILED - The Event sheet has a invalid format (some fields are incorrectly formated).")
+                    self.logs.append("CHECK FAILED - The Event sheet has a invalid format (some fields are incorrectly formatted).")
                     self.run = False
                     #sys.exit(" - ERROR - Invalid Field Formats in Event Sheet - ")
             else:
@@ -536,8 +536,12 @@ class Miappe_validator:
             self.CheckExperimentalFactorSheet()
         if self.run == True:
             self.CheckEventSheet()
-        #CheckObservationUnitSheet(input_file, logs)
-        #CheckSampleSheet(input_file, logs)
+        if self.run == True:
+            self.CheckObservationUnitSheet()
+        if self.run == True:
+            self.CheckSampleSheet()
+        if self.run == True:
+            self.CheckObservedVariableSheet()
 
         # Write miappe_validator_logs file:
         # Append File is Valid if self.run reaches the end as True
