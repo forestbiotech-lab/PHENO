@@ -112,3 +112,6 @@ data/virtuoso/*
 
 #Webstrom
 .idea/
+
+#Cross container volume mount
+uploads/
