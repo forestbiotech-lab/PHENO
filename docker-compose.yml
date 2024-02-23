@@ -35,6 +35,7 @@ services:
       - "3002:3000"
     volumes:
       - ./.config.json:/usr/src/app/.config.json
+      - ./uploads:/usr/src/app/uploads   
     depends_on:
       - db
     networks:
@@ -56,7 +57,7 @@ services:
      ports:
        - "3004:8080"
      volumes:
-       - ./ontoBrAPI-node-docker/uploads/uploadedfiles:/usr/src/app/external   
+       - ./uploads/uploadedfiles:/usr/src/app/external   
      depends_on:
        - web
      networks:
