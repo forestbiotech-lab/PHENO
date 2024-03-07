@@ -33,8 +33,16 @@ git submodule init
 #git submodule set-url [repo] [repo-url]
 #Do this for every repo in submodules
 git submodule set-url ontoBrAPI-node-docker  https://github.com/forestbiotech-lab/ontoBrAPI-node-docker.git
+git submodule set-url ontobrapi-admin  https://github.com/forestbiotech-lab/ontobrapi-admin.git
+git submodule set-url ontobrapi-brapi  https://github.com/forestbiotech-lab/ontobrapi-brapi.git
+git submodule update
+cd ontoBrAPI-node-docker
 git checkout master
-(...)
+cd ../ontobrapi-admin
+git checkout main
+cd ../ontobrapi-brapi
+git checkout main
+cd ..
 ``` 
 
 Build / Rebuild web module container (First run)
