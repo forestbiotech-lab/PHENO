@@ -41,7 +41,7 @@ git checkout master
 cd ../ontobrapi-admin
 git checkout main
 cd ../ontobrapi-brapi
-git checkout main
+git checkout master
 cd ..
 ``` 
 
