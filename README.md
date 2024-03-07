@@ -168,3 +168,21 @@ WHERE {
 }
 
 ```
+
+
+# Instance requirements
+            RAM    Image
+DB        - 300M    0.27Gb 
+Mongo     - 120M    0.70Gb
+Admin     -  42M    1.90Gb
+gateway   -   3M    0.19Gb
+validator -  25M    1.31Gb
+web       -  25M    1.03Gb
+brapi     -   ?M    
+TOTAL      ~520M   ~6.00Gb  
+~
++ 0.9Gb Node
+
+
+
+HD 16GB 
