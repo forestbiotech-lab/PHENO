@@ -63,8 +63,18 @@ services:
      networks:
        - backend
 
+  mongo:
+    image: mongo
+      #remove port in dev
+    ports:
+      - 27017:27017
+      #restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: password
+
   #cache:
-  #image:mongoDB 
+ 
 
 networks:
   backend:
