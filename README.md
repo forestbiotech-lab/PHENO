@@ -11,6 +11,8 @@ OntoBrAPI relies on Virtuoso to store triples and builds a management system for
 OntoBrAPI provides a BrAPI endpoint which delivers data in the triple store as JSON. This module allows administratores to update the data properties mapped to the respective JSON output in acordance with the BrAPI specification. 
 
 
+For more details check out OntoBrAPI's [documentation](https://ontobrapi-docs.readthedocs.io/) on READ the DOCS
+
 
 # Docker-compose 
 
