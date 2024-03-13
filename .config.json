@@ -6,8 +6,15 @@
     "port": "8890",
     "ontoBrAPIgraph": "http://localhost:8890/ontobrapi"
   },
-  "validator":{
-    "hostname":"validator",
-    "port":"8080"  
+  "validator": {
+    "hostname": "validator",
+    "port": "8080"
+  },
+  "mongo": {
+    "host": "mongo",
+    "port": "27017",
+    "database": "brapi",
+    "user": "root",
+    "password": "password"
   }
 }

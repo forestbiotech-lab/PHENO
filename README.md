@@ -11,6 +11,8 @@ OntoBrAPI relies on Virtuoso to store triples and builds a management system for
 OntoBrAPI provides a BrAPI endpoint which delivers data in the triple store as JSON. This module allows administratores to update the data properties mapped to the respective JSON output in acordance with the BrAPI specification. 
 
 
+For more details check out OntoBrAPI's [documentation](https://ontobrapi-docs.readthedocs.io/) on READ the DOCS
+
 
 # Docker-compose 
 
@@ -33,8 +35,16 @@ git submodule init
 #git submodule set-url [repo] [repo-url]
 #Do this for every repo in submodules
 git submodule set-url ontoBrAPI-node-docker  https://github.com/forestbiotech-lab/ontoBrAPI-node-docker.git
+git submodule set-url ontobrapi-admin  https://github.com/forestbiotech-lab/ontobrapi-admin.git
+git submodule set-url ontobrapi-brapi  https://github.com/forestbiotech-lab/ontobrapi-brapi.git
+git submodule update
+cd ontoBrAPI-node-docker
 git checkout master
-(...)
+cd ../ontobrapi-admin
+git checkout main
+cd ../ontobrapi-brapi
+git checkout master
+cd ..
 ``` 
 
 Build / Rebuild web module container (First run)
