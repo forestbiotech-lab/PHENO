@@ -85,26 +85,26 @@ class Miappe_validator:
                 
                 # Checks that columns which require mandatory values are filled
 
-                if investigation_format[0] not in valid_investigation_formats_dic['col1']:
+                if str(investigation_format[0]) not in valid_investigation_formats_dic['col1']:
                     self.logs.append("CHECK FAILED - The Investigation ID* (Investigation sheet) is required.")
                     self.run = False
-                if investigation_format[1] not in valid_investigation_formats_dic['col2']:
+                if str(investigation_format[1]) not in valid_investigation_formats_dic['col2']:
                     self.logs.append("CHECK FAILED - The Investigation Title* (Investigation sheet) is required.")
                     self.run = False
-                if investigation_format[2] not in valid_investigation_formats_dic['col3']:
+                if str(investigation_format[2]) not in valid_investigation_formats_dic['col3']:
                     self.logs.append("CHECK FAILED - The Investigation Description* (Investigation sheet) is required.")
                     self.run = False
-                # if investigation_format[3] not in valid_investigation_formats_dic['col4']:
+                # if str(investigation_format[3]) not in valid_investigation_formats_dic['col4']:
                     # self.logs.append("CHECK WARNING - The Submission Date (Investigation sheet) is incorrectly formated.")
-                # if investigation_format[4] not in valid_investigation_formats_dic['col5']:
+                # if str(investigation_format[4]) not in valid_investigation_formats_dic['col5']:
                     # self.logs.append("CHECK WARNING - The Public Release date (Investigation sheet) is incorrectly formated.")
-                # if investigation_format[5] not in valid_investigation_formats_dic['col6']:
+                # if str(investigation_format[5]) not in valid_investigation_formats_dic['col6']:
                     # self.logs.append("CHECK FAILED - The License (Investigation sheet) is incorrectly formated.")
                     # self.run = False
-                if investigation_format[6] not in valid_investigation_formats_dic['col7']:
+                if str(investigation_format[6]) not in valid_investigation_formats_dic['col7']:
                     self.logs.append("CHECK FAILED - The MIAPPE version* (Investigation sheet) is required.")
                     self.run = False
-                # if investigation_format[7] not in valid_investigation_formats_dic['col8']:
+                # if str(investigation_format[7]) not in valid_investigation_formats_dic['col8']:
                     # self.logs.append("CHECK FAILED - The Associatied publication (Investigation sheet) is incorrectly formated.")
                     # self.run = False
 
