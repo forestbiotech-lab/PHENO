@@ -1,21 +1,6 @@
   --- OntoBrAPI - Input File Validity Report ---  
 CHECK PASSED - Valid input file extension
-CHECK WARNING - The input file has 12 sheets, which is more than the minimum 11 valid sheets required. Additional sheets may be discarded.
+CHECK PASSED - The input file has the minimum required 11 valid sheet names.
 CHECK PASSED - The Investigation sheet has a valid header (column name/number).
-CHECK PASSED - The Investigation sheet has a valid format (properly formatted fields).
-CHECK PASSED - The Investigation sheet has no duplicate Investigation unique IDs.
-CHECK PASSED - The Study sheet has a valid header (column name/number).
-CHECK PASSED - The Person sheet has a valid header (column name/number).
-CHECK PASSED - The Person sheet has a valid format (properly formatted fields).
-CHECK PASSED - The Data File sheet has a valid header (column name/number).
-CHECK PASSED - The Data File sheet has a valid format (properly formatted fields).
-CHECK PASSED - The Biological Material sheet has a valid header (column name/number).
-CHECK PASSED - The Biological Material sheet has a valid format (properly formatted fields).
-CHECK PASSED - The Environment sheet has a valid header (column name/number).
-CHECK PASSED - The Experimental Factor sheet has a valid header (column name/number).
-CHECK PASSED - The Event sheet has a valid header (column name/number).
-CHECK WARNING - The Event sheet is empty (no format check applied).
-CHECK PASSED - The Observation Unit sheet has a valid header (column name/number).
-CHECK PASSED - The Sample sheet has a valid header (column name/number).
-CHECK PASSED - The Observed Variable sheet has a valid header (column name/number).
- - THE INPUT FILE IS VALID - 
+CHECK FAILED - The Investigation sheet has a invalid format (some fields are incorrectly formatted).
+ - THE INPUT FILE IS INVALID - 

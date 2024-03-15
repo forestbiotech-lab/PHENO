@@ -58,10 +58,8 @@ class Miappe_validator:
 
 
     #  -  Check Investigation Sheet  -
-    # REDO SECTION TO ALLOW MIAPPE TEMPLATE (TRANSPOSED VERSION)
 
     def CheckInvestigationSheet(self):
-        self.logs.append(datetime.now() - startTime)
         # Check Investigation Sheet Header
         try:
             self.sheet_df = pd.read_excel(self.input_file, 'Investigation')
@@ -78,53 +76,57 @@ class Miappe_validator:
                 self.logs.append("CHECK FAILED - The Investigation sheet has an invalid header (column name/number).")
                 self.run = False
 
-            # if self.run == True:
+            if self.run == True:
                 # Cleaning "\n" characters from the dataframe
-                # self.sheet_df.replace({'\n': ''}, regex=True)
+                self.sheet_df.replace({'\n': ''}, regex=True)
 
                 # Check Investigation field formats per column
                 investigation_format = self.sheet_df.dtypes
 
-                valid_investigation_formats_dic = {'col1': "dtype('O')", 'col2': "dtype('O')", 'col3': "dtype('O')", 'col4': ["dtype('<M8[ns]')", "dtype('float64')"],
-                                                   'col5': ["dtype('<M8[ns]')", "dtype('float64')"], 'col6': ["dtype('O')", "dtype('float64')"],
-                                                   'col7': ["dtype('O')", "dtype('float64')"], 'col8': ["dtype('O')", "dtype('float64')"]}
+                valid_investigation_formats = ["[dtype('O'), dtype('O'), dtype('O'), dtype('float64'), dtype('float64'), dtype('float64'), dtype('O'), dtype('float64')]",
+                                            "[dtype('O'), dtype('O'), dtype('O'), dtype('float64'), dtype('float64'), dtype('float64'), dtype('O'), dtype('O')]",
+                                            "[dtype('O'), dtype('O'), dtype('O'), dtype('float64'), dtype('float64'), dtype('O'), dtype('O'), dtype('O')]",
+                                            "[dtype('O'), dtype('O'), dtype('O'), dtype('float64'), dtype('float64'), dtype('O'), dtype('float64'), dtype('O')]",
+                                            "[dtype('O'), dtype('O'), dtype('O'), dtype('<M8[ns]'), dtype('<M8[ns]'), dtype('O'), dtype('float64'), dtype('float64')]",
+                                            "[dtype('O'), dtype('O'), dtype('O'), dtype('<M8[ns]'), dtype('<M8[ns]'), dtype('O'), dtype('float64'), dtype('O')]",
+                                            "[dtype('O'), dtype('O'), dtype('O'), dtype('O'), dtype('O'), dtype('O'), dtype('float64'), dtype('float64')]",
+                                            "[dtype('O'), dtype('O'), dtype('O'), dtype('O'), dtype('O'), dtype('O'), dtype('float64'), dtype('O')"]
+                # TODO
+                # Format 1 - Mandatory fields must have valid formats, while the rest can be empty ('float64')
+                # Format 2 - Same as previous but publication is filled ('O' instead of 'float64')
+                # Format 3 - If dates are present, check correct date format ('<M8[ns]')
+                # Format 4 - Same as 3, but publication is filled ('O' instead of 'float64')
+                # Format 5 - Sometimes dates are interpreted as object, don't give error if that's the case
+                # Format 6 - Same as 5, but publication is filled ('O' instead of 'float64')
 
-                if investigation_format[0] != valid_investigation_formats_dic['col1']:
-                    self.logs.append("CHECK FAILED - The Investigation ID (Investigation sheet) is required.")
-                    self.run = False
-                if investigation_format[1] != valid_investigation_formats_dic['col2']:
-                    self.logs.append("CHECK FAILED - The Investigation Title (Investigation sheet) is required.")
-                    self.run = False
-                if investigation_format[0] != valid_investigation_formats_dic['col3']:
-                    self.logs.append("CHECK FAILED - The Investigation Description (Investigation sheet) is required.")
-                    self.run = False
-                if investigation_format[0] != valid_investigation_formats_dic['col4']:
-                    self.logs.append("CHECK FAILED - The Investigation ID in the Investigation sheet is empty.")
-                    self.run = False
-                if investigation_format[0] != valid_investigation_formats_dic['col5']:
-                    self.logs.append("CHECK FAILED - The Investigation ID in the Investigation sheet is empty.")
-                    self.run = False
-                if investigation_format[0] != valid_investigation_formats_dic['col6']:
-                    self.logs.append("CHECK FAILED - The Investigation ID in the Investigation sheet is empty.")
-                    self.run = False
-                if investigation_format[0] != valid_investigation_formats_dic['col7']:
-                    self.logs.append("CHECK FAILED - The Investigation ID in the Investigation sheet is empty.")
-                    self.run = False
-                if investigation_format[0] != valid_investigation_formats_dic['col8']:
-                    self.logs.append("CHECK FAILED - The Investigation ID in the Investigation sheet is empty.")
+                if str(list(investigation_format)) in valid_investigation_formats:
+                    self.logs.append(
+                        "CHECK PASSED - The Investigation sheet has a valid format (properly formatted fields).")
+                else:
+                    self.logs.append(
+                        "CHECK FAILED - The Investigation sheet has a invalid format (some fields are incorrectly formatted).")
                     self.run = False
 
-                self.logs.append(
-                "CHECK PASSED - The Investigation sheet has valid columns (properly formatted fields).")
+            #This fixes Pass Fail Pass Invalid Cases
+            if self.run == True:
+                # Check if the Investigation unique ID holds unique values
+
+                investigation_unid_col = self.sheet_df.loc[:, "Investigation unique ID"].is_unique
+                if investigation_unid_col == True:
+                    self.logs.append("CHECK PASSED - The Investigation sheet has no duplicate Investigation unique IDs.")
+                else:
+                    self.logs.append(
+                        "CHECK FAILED - The Investigation sheet has duplicate Investigation unique IDs (they should be unique).")
+                    self.run = False
 
         except ValueError:
-            self.logs.append("CHECK FAILED - The Study sheet cannot be opened.")
+            self.logs.append("CHECK FAILED - The Investigation sheet cannot be opened.")
             self.run = False
+
 
     #  -  Check Study Sheet  -
 
     def CheckStudySheet(self):
-        self.logs.append(datetime.now() - startTime)
         # Check Study Sheet Header
         try:
             self.sheet_df = pd.read_excel(self.input_file, 'Study')
@@ -171,7 +173,6 @@ class Miappe_validator:
     #  -  Check Person Sheet  -
 
     def CheckPersonSheet(self):
-        self.logs.append(datetime.now() - startTime)
         # Check Person Sheet Header
         try:
             self.sheet_df = pd.read_excel(self.input_file, 'Person')
