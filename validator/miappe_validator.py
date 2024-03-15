@@ -37,14 +37,14 @@ class Miappe_validator:
     def check_input_file(self):
         # These are all valid sheet names for a MIAPPE compliant excel file
         valid_sheet_names = ["Investigation", "Study", "Person", "Data file", "Biological Material", "Sample",
-                             "Observation Unit", "Environment", "Factor", "Observed Variable", "Event"]
+                             "Observation Unit", "Environment", "Factor", "Exp. Factor", "Observed Variable", "Event"]
 
         # Check the number of input sheet names that are valid or not
         self.valid_sheets = [i for i in self.sheetsList if i in valid_sheet_names]
         if len(self.valid_sheets) < 11:
             self.logs.append(
                     "CHECK FAILED - The input file has " + str(len(self.valid_sheets)) + 
-                    " valid input sheets, which is less than the minimum 11 valid sheets required: Investigation, Study, Person, Data file, Biological Material, Sample, Observation Unit, Environment, Factor, Observed Variable, Event")
+                    " valid input sheets, which is less than the minimum 11 valid sheets required: Investigation, Study, Person, Data file, Biological Material, Sample, Observation Unit, Environment, Factor/Exp. Factor, Observed Variable, Event")
             self.run = False
         else:
             if len(self.sheetsList) == 11:
