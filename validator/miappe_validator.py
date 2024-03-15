@@ -83,10 +83,12 @@ class Miappe_validator:
                                                    7: ["dtype('O')", "dtype('float64')"], 8: ["dtype('O')", "dtype('float64')"]}
                 
                 investigation_format = self.sheet_df.dtypes
+                self.logs.append(investigation_format)
+                self.logs.append(self.sheet_df.iloc[2,2])
                 
                 # Checks that columns which require mandatory values are filled
 
-                if str(investigation_format[0]) not in valid_investigation_formats_dic[1]:
+                if pd.isna(self.sheet_df.iloc[2,2]) == True:
                     self.logs.append("CHECK FAILED - The Investigation ID* (Investigation sheet) is required.")
                     self.run = False
                 if str(investigation_format[1]) not in valid_investigation_formats_dic[2]:

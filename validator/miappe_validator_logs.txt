@@ -1,7 +1,7 @@
   --- OntoBrAPI - Input File Validity Report ---  
 CHECK PASSED - Valid input file extension
 CHECK PASSED - The input file has the minimum required 11 valid sheet names.
-0:00:00.100415
+0:00:00.094704
 Investigation unique ID
 CHECK PASSED - The Investigation sheet has a valid header (column name/number).
 CHECK FAILED - The Investigation ID* (Investigation sheet) is required.
