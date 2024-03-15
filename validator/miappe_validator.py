@@ -46,7 +46,6 @@ class Miappe_validator:
                     "CHECK FAILED - The input file has " + str(len(self.valid_sheets)) + 
                     " valid input sheets, which is less than the minimum 11 valid sheets required: Investigation, Study, Person, Data file, Biological Material, Sample, Observation Unit, Environment, Factor, Observed Variable, Event")
             self.run = False
-            #TODO keep running only checking the methods for the sheets that exist.
         else:
             if len(self.sheetsList) == 11:
                 self.logs.append(
@@ -200,6 +199,47 @@ class Miappe_validator:
 
             if person_header == valid_person_header1 or person_header == valid_person_header2:
                 self.logs.append("CHECK PASSED - The Person sheet has a valid header (column name/number).")
+                # Give error if Person sheet is empty
+                if len(self.sheet_df.index) != 0:
+                    # Person sheet - Checks if mandatory columns have values (at least in the first position)
+                    if pd.isna(self.sheet_df.iloc[0, 0]) == True:
+                        self.logs.append("CHECK FAILED - The Study unique ID column (Person sheet) is mandatory.")
+                        self.run = False
+                    if pd.isna(self.sheet_df.iloc[0,1]) == True:
+                        self.logs.append("CHECK FAILED - The Person name* column (Person sheet) is mandatory.")
+                        self.run = False
+                    if pd.isna(self.sheet_df.iloc[0,4]) == True:
+                        self.logs.append("CHECK FAILED - The Person role* column (Person sheet) is mandatory.")
+                        self.run = False
+                    if pd.isna(self.sheet_df.iloc[0,5]) == True:
+                        self.logs.append("CHECK FAILED - The Person affiliation* column (Person sheet) is mandatory.")
+                        self.run = False
+                else:
+                    self.logs.append("CHECK FAILED - The Person Sheet is empty.")
+                    self.run = False
+            # This means that the Excel is the template from MIAPPE Github
+            elif person_header == valid_person_header3:
+                # Delete first column and then first three rows of the person dataframe
+                self.sheet_df.drop(["Definition", "Example", "Format"], axis = 0, inplace = True)
+                self.sheet_df.drop("Field", axis = 1, inplace = True)
+                # Give error if Person sheet is empty
+                if len(self.sheet_df.index) != 0:
+                # Person sheet - Checks if mandatory columns have values (at least in the first position)
+                    if pd.isna(self.sheet_df.iloc[0, 0]) == True:
+                        self.logs.append("CHECK FAILED - The Study unique ID column (Person sheet) is mandatory.")
+                        self.run = False
+                    if pd.isna(self.sheet_df.iloc[0,1]) == True:
+                        self.logs.append("CHECK FAILED - The Person name* column (Person sheet) is mandatory.")
+                        self.run = False
+                    if pd.isna(self.sheet_df.iloc[0,4]) == True:
+                        self.logs.append("CHECK FAILED - The Person role* column (Person sheet) is mandatory.")
+                        self.run = False
+                    if pd.isna(self.sheet_df.iloc[0,5]) == True:
+                        self.logs.append("CHECK FAILED - The Person affiliation* column (Person sheet) is mandatory.")
+                        self.run = False
+                else:
+                    self.logs.append("CHECK FAILED - The Person Sheet is empty.")
+                    self.run = False
             else:
                 self.logs.append("CHECK FAILED - The Person sheet has an invalid header (column name/number).")
                 self.run = False
@@ -208,52 +248,8 @@ class Miappe_validator:
             # self.sheet_df.replace({'\n': ''}, regex=True)
 
             # Check Person field formats per column
-            person_format = self.sheet_df.dtypes
-            self.logs.append(person_format)
-
-            # Give error if Person sheet is empty
-            if len(self.sheet_df.index) != 0:
-                # Person sheet - Checks if mandatory columns have values (at least in the first position)
-                if pd.isna(self.sheet_df.iloc[0, 0]) == True:
-                    self.logs.append("CHECK FAILED - The Study unique ID (Person sheet) is required.")
-                    self.run = False
-                if pd.isna(self.sheet_df.iloc[0,1]) == True:
-                    self.logs.append("CHECK FAILED - At least one Person name* (Person sheet) is required.")
-                    self.run = False
-                if pd.isna(self.sheet_df.iloc[0,4]) == True:
-                    self.logs.append("CHECK FAILED - The Person role* (Person sheet) is required.")
-                    self.run = False
-                if pd.isna(self.sheet_df.iloc[0,5]) == True:
-                    self.logs.append("CHECK FAILED - The Person affiliation* (Person sheet) is required.")
-                    self.run = False
-            else:
-                self.logs.append("CHECK FAILED - The Person Sheet is empty.")
-                self.run = False
-
-            # This means that the Excel is the template from MIAPPE Github
-            if person_header == valid_person_header3:
-                # Delete first column and then first three rows of the person dataframe
-                self.sheet_df.drop(["Definition", "Example", "Format"], axis = 0, inplace = True)
-                self.sheet_df.drop("Field", axis = 1, inplace = True)
-
-            # Give error if Person sheet is empty
-            if len(self.sheet_df.index) != 0:
-                # Person sheet - Checks if mandatory columns have values (at least in the first position)
-                if pd.isna(self.sheet_df.iloc[0, 0]) == True:
-                    self.logs.append("CHECK FAILED - The Study unique ID (Person sheet) is required.")
-                    self.run = False
-                if pd.isna(self.sheet_df.iloc[0,1]) == True:
-                    self.logs.append("CHECK FAILED - At least one Person name* (Person sheet) is required.")
-                    self.run = False
-                if pd.isna(self.sheet_df.iloc[0,4]) == True:
-                    self.logs.append("CHECK FAILED - The Person role* (Person sheet) is required.")
-                    self.run = False
-                if pd.isna(self.sheet_df.iloc[0,5]) == True:
-                    self.logs.append("CHECK FAILED - The Person affiliation* (Person sheet) is required.")
-                    self.run = False
-            else:
-                self.logs.append("CHECK FAILED - The Person Sheet is empty.")
-                self.run = False
+            # person_format = self.sheet_df.dtypes
+            # self.logs.append(person_format)
 
             self.logs.append(
             "CHECK PASSED - The Person sheet has valid columns (properly formatted fields).")
