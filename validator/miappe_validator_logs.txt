@@ -1,7 +1,7 @@
   --- OntoBrAPI - Input File Validity Report ---  
 CHECK PASSED - Valid input file extension
 CHECK PASSED - The input file has the minimum required 11 valid sheet names.
-0:00:00.086975
+0:00:00.097993
 Investigation unique ID
 CHECK PASSED - The Investigation sheet has a valid header (column name/number).
 Investigation unique ID       object
@@ -13,6 +13,15 @@ License                      float64
 MIAPPE version*              float64
 Associated publication       float64
 dtype: object
-CHECK FAILED - The MIAPPE version* (Investigation sheet) is required.
+My_project
 CHECK PASSED - The Investigation sheet has valid columns (properly formatted fields).
+0:00:00.104239
+CHECK PASSED - The Study sheet has a valid header (column name/number).
+0:00:00.133180
+CHECK PASSED - The Person sheet has a valid header (column name/number).
+CHECK PASSED - The Person sheet has a valid format (properly formatted fields).
+CHECK PASSED - The Data File sheet has a valid header (column name/number).
+CHECK PASSED - The Data File sheet has a valid format (properly formatted fields).
+CHECK PASSED - The Biological Material sheet has a valid header (column name/number).
+CHECK FAILED - The Biological Material sheet has a invalid format (some fields are incorrectly formatted).
  - THE INPUT FILE IS INVALID - 

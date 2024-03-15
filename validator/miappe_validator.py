@@ -61,7 +61,7 @@ class Miappe_validator:
     # REDO SECTION TO ALLOW MIAPPE TEMPLATE (TRANSPOSED VERSION)
 
     def CheckInvestigationSheet(self):
-        self.logs.append(datetime.now() - startTime)
+        self.logs.append("investigation" + str(datetime.now() - startTime))
         # Check Investigation Sheet Header
         try:
             self.sheet_df = pd.read_excel(self.complete_excel, 'Investigation')
@@ -84,9 +84,8 @@ class Miappe_validator:
                 
                 investigation_format = self.sheet_df.dtypes
                 self.logs.append(investigation_format)
-                self.logs.append(self.sheet_df.iloc[0, 0])
                 
-                # Checks that columns which require mandatory values are filled
+                # Checks if mandatory columns have values (at least in the first position)
 
                 if pd.isna(self.sheet_df.iloc[0, 0]) == True:
                     self.logs.append("CHECK FAILED - The Investigation ID* (Investigation sheet) is required.")
@@ -97,26 +96,17 @@ class Miappe_validator:
                 if pd.isna(self.sheet_df.iloc[0,2]) == True:
                     self.logs.append("CHECK FAILED - The Investigation Description* (Investigation sheet) is required.")
                     self.run = False
-                # if str(investigation_format[3]) not in valid_investigation_formats_dic['col4']:
-                    # self.logs.append("CHECK WARNING - The Submission Date (Investigation sheet) is incorrectly formated.")
-                # if str(investigation_format[4]) not in valid_investigation_formats_dic['col5']:
-                    # self.logs.append("CHECK WARNING - The Public Release date (Investigation sheet) is incorrectly formated.")
-                # if str(investigation_format[5]) not in valid_investigation_formats_dic['col6']:
-                    # self.logs.append("CHECK FAILED - The License (Investigation sheet) is incorrectly formated.")
-                    # self.run = False
                 if pd.isna(self.sheet_df.iloc[0,6]) == True:
                     self.logs.append("CHECK FAILED - The MIAPPE version* (Investigation sheet) is required.")
                     self.run = False
-                # if str(investigation_format[7]) not in valid_investigation_formats_dic['col8']:
-                    # self.logs.append("CHECK FAILED - The Associatied publication (Investigation sheet) is incorrectly formated.")
-                    # self.run = False
 
+            # This means that the Excel is the template from MIAPPE Github (or modified to keep only two first columns)
             elif investigation_header == valid_investigation_header2 or investigation_header == valid_investigation_header3:
                 # Check if Rows are well named
                 if self.sheet_df.iloc[1:, 0] == valid_investigation_header1:
                     self.logs.append("CHECK PASSED - The Investigation sheet has a valid header (column name/number).")
                 else:
-                    self.logs.append("CHECK FAILED - The Investigation sheet has incorrect names used in the first column.")
+                    self.logs.append("CHECK FAILED - The Investigation sheet has incorrect names in the Field.")
                     self.run = False
 
                 #Check if mandatory fields within Investigation sheet exist (not NaN)
@@ -147,7 +137,7 @@ class Miappe_validator:
     #  -  Check Study Sheet  -
 
     def CheckStudySheet(self):
-        self.logs.append(datetime.now() - startTime)
+        self.logs.append("study" + str(datetime.now() - startTime))
         # Check Study Sheet Header
         try:
             self.sheet_df = pd.read_excel(self.input_file, 'Study')
@@ -171,7 +161,7 @@ class Miappe_validator:
                                "Observation unit level hierarchy", "Observation unit description",
                                "Description of growth facility", "Type of growth facility", "Cultural practices",
                                "Map of experimental design"]
-            # For vitis file to work, Investigation title col added
+            # For vitis file to work, Investigation title column added
             valid_study_header3 = ["Investigation unique ID", "Investigation title", "Study unique ID", "Study title",
                                 "Study description", "Start date of study", "End date of study", "Contact institution",
                                "Geographic location (country)", "Experimental site name", "Geographic location (latitude)",
@@ -205,6 +195,8 @@ class Miappe_validator:
             valid_person_header1 = ["Person name", "Person email", "Person ID", "Person role", "Person affiliation"]
             valid_person_header2 = ["Study unique ID", "Person name", "Person email", "Person ID", "Person role",
                                     "Person affiliation"]
+            valid_person_header3 = ["Field", "Study unique ID", "Person name*", "Person email", "Person ID", "Person role*",
+                                    "Person affiliation*"]
 
             if person_header == valid_person_header1 or person_header == valid_person_header2:
                 self.logs.append("CHECK PASSED - The Person sheet has a valid header (column name/number).")
@@ -214,26 +206,48 @@ class Miappe_validator:
                 #sys.exit(" - ERROR - Invalid Header in Person Sheet - ")
 
             # Cleaning "\n" characters from the dataframe
-            self.sheet_df.replace({'\n': ''}, regex=True)
+            # self.sheet_df.replace({'\n': ''}, regex=True)
 
             # Check Person field formats per column
             person_format = self.sheet_df.dtypes
-
-            valid_person_formats = ["[dtype('O'), dtype('O'), dtype('float64'), dtype('float64'), dtype('O'), dtype('O')]",
-                                    "[dtype('O'), dtype('O'), dtype('float64'), dtype('O'), dtype('O'), dtype('O')]",
-                                    "[dtype('O'), dtype('O'), dtype('O'), dtype('float64'), dtype('O'), dtype('O')]",
-                                    "[dtype('O'), dtype('O'), dtype('O'), dtype('O'), dtype('O'), dtype('O')]"]
-            # Format 1 - Mandatory fields must have valid formats, while the rest can be empty ('float64')
-            # Format 2 - Person email is missing
-            # Format 3 - Person ID is missing
-            # Format 2 - All fields are filled ('O')
-
-            if str(list(person_format)) in valid_person_formats:
-                self.logs.append("CHECK PASSED - The Person sheet has a valid format (properly formatted fields).")
-            else:
-                self.logs.append("CHECK FAILED - The Person sheet has a invalid format (some fields are incorrectly formatted).")
+            self.logs.append(person_format)
+                
+            # Person sheet - Checks if mandatory columns have values (at least in the first position)
+            if pd.isna(self.sheet_df.iloc[0, 0]) == True:
+                self.logs.append("CHECK FAILED - The Study unique ID (Person sheet) is required.")
                 self.run = False
-                #sys.exit(" - ERROR - Invalid Field Formats in Person Sheet - ")
+            if pd.isna(self.sheet_df.iloc[0,1]) == True:
+                self.logs.append("CHECK FAILED - At least one Person name* (Person sheet) is required.")
+                self.run = False
+            if pd.isna(self.sheet_df.iloc[0,4]) == True:
+                self.logs.append("CHECK FAILED - The Person role* (Person sheet) is required.")
+                self.run = False
+            if pd.isna(self.sheet_df.iloc[0,5]) == True:
+                self.logs.append("CHECK FAILED - The Person affiliation* (Person sheet) is required.")
+                self.run = False
+            
+            # This means that the Excel is the template from MIAPPE Github
+            if person_header == valid_person_header3:
+                # Delete first column and then first three rows of the person dataframe
+                self.sheet_df.drop(["Definition", "Example", "Format"], axis = 0, inplace = True)
+                self.sheet_df.drop("Field", axis = 1, inplace = True)
+
+            # Person sheet - Checks if mandatory columns have values (at least in the first position)
+            if pd.isna(self.sheet_df.iloc[0, 0]) == True:
+                self.logs.append("CHECK FAILED - The Study unique ID (Person sheet) is required.")
+                self.run = False
+            if pd.isna(self.sheet_df.iloc[0,1]) == True:
+                self.logs.append("CHECK FAILED - At least one Person name* (Person sheet) is required.")
+                self.run = False
+            if pd.isna(self.sheet_df.iloc[0,4]) == True:
+                self.logs.append("CHECK FAILED - The Person role* (Person sheet) is required.")
+                self.run = False
+            if pd.isna(self.sheet_df.iloc[0,5]) == True:
+                self.logs.append("CHECK FAILED - The Person affiliation* (Person sheet) is required.")
+                self.run = False
+
+            self.logs.append(
+            "CHECK PASSED - The Person sheet has valid columns (properly formatted fields).")
 
         except ValueError:
             self.logs.append("CHECK FAILED - The Person sheet cannot be opened.")
@@ -332,9 +346,8 @@ class Miappe_validator:
                 self.logs.append("CHECK PASSED - The Biological Material sheet has a valid format (properly formatted fields).")
             else:
                 self.logs.append(
-                    "CHECK FAILED - The Biological Material sheet has a invalid format (some fields are incorrectly formatted).")
+                    "CHECK WARNING - The Biological Material sheet has invalid formats (some fields are incorrectly formatted).")
                 self.run = False
-                #sys.exit(" - ERROR - Invalid Field Formats in Biological Material Sheet - ")
 
         except ValueError:
             self.logs.append("CHECK FAILED - The Biological Material sheet cannot be opened.")
