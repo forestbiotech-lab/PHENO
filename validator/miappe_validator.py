@@ -203,7 +203,6 @@ class Miappe_validator:
             else:
                 self.logs.append("CHECK FAILED - The Person sheet has an invalid header (column name/number).")
                 self.run = False
-                #sys.exit(" - ERROR - Invalid Header in Person Sheet - ")
 
             # Cleaning "\n" characters from the dataframe
             # self.sheet_df.replace({'\n': ''}, regex=True)
@@ -211,6 +210,11 @@ class Miappe_validator:
             # Check Person field formats per column
             person_format = self.sheet_df.dtypes
             self.logs.append(person_format)
+
+            # Give error if Person sheet is empty
+            if len(self.sheet_df.index) == 0:
+                self.logs.append("CHECK FAILED - The Person Sheet is empty.")
+                self.run = False
                 
             # Person sheet - Checks if mandatory columns have values (at least in the first position)
             if pd.isna(self.sheet_df.iloc[0, 0]) == True:
