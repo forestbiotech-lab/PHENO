@@ -78,23 +78,22 @@ class Miappe_validator:
             if investigation_header == valid_investigation_header1:
                 self.logs.append("CHECK PASSED - The Investigation sheet has a valid header (column name/number).")
 
-                valid_investigation_formats_dic = {1: ["dtype('O')"], 2: "dtype('O')", 3: "dtype('O')", 4: ["dtype('<M8[ns]')", "dtype('float64')"],
-                                                   5: ["dtype('<M8[ns]')", "dtype('float64')"], 6: ["dtype('O')", "dtype('float64')"],
-                                                   7: ["dtype('O')", "dtype('float64')"], 8: ["dtype('O')", "dtype('float64')"]}
+                # valid_investigation_formats_dic = {1: ["dtype('O')"], 2: "dtype('O')", 3: "dtype('O')", 4: ["dtype('<M8[ns]')", "dtype('float64')"],
+                #                                  5: ["dtype('<M8[ns]')", "dtype('float64')"], 6: ["dtype('O')", "dtype('float64')"],
+                #                                  7: ["dtype('O')", "dtype('float64')"], 8: ["dtype('O')", "dtype('float64')"]}
                 
                 investigation_format = self.sheet_df.dtypes
                 self.logs.append(investigation_format)
-                self.logs.append(self.sheet_df.iloc[2,2])
                 
                 # Checks that columns which require mandatory values are filled
 
-                if pd.isna(self.sheet_df.iloc[2,2]) == True:
+                if pd.isna(self.sheet_df.iloc[1,1]) == True:
                     self.logs.append("CHECK FAILED - The Investigation ID* (Investigation sheet) is required.")
                     self.run = False
-                if str(investigation_format[1]) not in valid_investigation_formats_dic[2]:
+                if pd.isna(self.sheet_df.iloc[1,2]) == True:
                     self.logs.append("CHECK FAILED - The Investigation Title* (Investigation sheet) is required.")
                     self.run = False
-                if str(investigation_format[2]) not in valid_investigation_formats_dic[3]:
+                if pd.isna(self.sheet_df.iloc[1,3]) == True:
                     self.logs.append("CHECK FAILED - The Investigation Description* (Investigation sheet) is required.")
                     self.run = False
                 # if str(investigation_format[3]) not in valid_investigation_formats_dic['col4']:
@@ -104,7 +103,7 @@ class Miappe_validator:
                 # if str(investigation_format[5]) not in valid_investigation_formats_dic['col6']:
                     # self.logs.append("CHECK FAILED - The License (Investigation sheet) is incorrectly formated.")
                     # self.run = False
-                if str(investigation_format[6]) not in valid_investigation_formats_dic[7]:
+                if pd.isna(self.sheet_df.iloc[1,7]) == True:
                     self.logs.append("CHECK FAILED - The MIAPPE version* (Investigation sheet) is required.")
                     self.run = False
                 # if str(investigation_format[7]) not in valid_investigation_formats_dic['col8']:
