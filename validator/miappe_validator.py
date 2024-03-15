@@ -65,7 +65,7 @@ class Miappe_validator:
         # Check Investigation Sheet Header
         try:
             self.sheet_df = pd.read_excel(self.input_file, 'Investigation')
-            self.logs.append(self.sheet_df[0,])
+            self.logs.append(self.sheet_df.iloc[:, 0])
             # Remove '*' characters, which indicate mandatory columns to fill
             investigation_header = [ele.replace('*', '') for ele in list(self.sheet_df)]
 
@@ -84,7 +84,7 @@ class Miappe_validator:
                 investigation_format = self.sheet_df.dtypes
                 
                 # Checks that columns which require mandatory values are filled
-                
+
                 if investigation_format[0] not in valid_investigation_formats_dic['col1']:
                     self.logs.append("CHECK FAILED - The Investigation ID* (Investigation sheet) is required.")
                     self.run = False
