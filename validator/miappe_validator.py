@@ -73,25 +73,26 @@ class Miappe_validator:
                                           "Submission date", "Public release date", "License", "MIAPPE version",
                                           "Associated publication"]
             valid_investigation_header2 = ["Field", "Value", "Definition", "Example", "Format"]
+            valid_investigation_header3 = ["Field", "Value"]
 
             if investigation_header == valid_investigation_header1:
                 self.logs.append("CHECK PASSED - The Investigation sheet has a valid header (column name/number).")
 
-                valid_investigation_formats_dic = {'col1': ["dtype('O')"], 'col2': "dtype('O')", 'col3': "dtype('O')", 'col4': ["dtype('<M8[ns]')", "dtype('float64')"],
-                                                   'col5': ["dtype('<M8[ns]')", "dtype('float64')"], 'col6': ["dtype('O')", "dtype('float64')"],
-                                                   'col7': ["dtype('O')", "dtype('float64')"], 'col8': ["dtype('O')", "dtype('float64')"]}
+                valid_investigation_formats_dic = {1: ["dtype('O')"], 2: "dtype('O')", 3: "dtype('O')", 4: ["dtype('<M8[ns]')", "dtype('float64')"],
+                                                   5: ["dtype('<M8[ns]')", "dtype('float64')"], 6: ["dtype('O')", "dtype('float64')"],
+                                                   7: ["dtype('O')", "dtype('float64')"], 8: ["dtype('O')", "dtype('float64')"]}
                 
                 investigation_format = self.sheet_df.dtypes
                 
                 # Checks that columns which require mandatory values are filled
 
-                if str(investigation_format[0]) not in valid_investigation_formats_dic['col1']:
+                if str(investigation_format[0]) not in valid_investigation_formats_dic[1]:
                     self.logs.append("CHECK FAILED - The Investigation ID* (Investigation sheet) is required.")
                     self.run = False
-                if str(investigation_format[1]) not in valid_investigation_formats_dic['col2']:
+                if str(investigation_format[1]) not in valid_investigation_formats_dic[2]:
                     self.logs.append("CHECK FAILED - The Investigation Title* (Investigation sheet) is required.")
                     self.run = False
-                if str(investigation_format[2]) not in valid_investigation_formats_dic['col3']:
+                if str(investigation_format[2]) not in valid_investigation_formats_dic[3]:
                     self.logs.append("CHECK FAILED - The Investigation Description* (Investigation sheet) is required.")
                     self.run = False
                 # if str(investigation_format[3]) not in valid_investigation_formats_dic['col4']:
@@ -101,15 +102,34 @@ class Miappe_validator:
                 # if str(investigation_format[5]) not in valid_investigation_formats_dic['col6']:
                     # self.logs.append("CHECK FAILED - The License (Investigation sheet) is incorrectly formated.")
                     # self.run = False
-                if str(investigation_format[6]) not in valid_investigation_formats_dic['col7']:
+                if str(investigation_format[6]) not in valid_investigation_formats_dic[7]:
                     self.logs.append("CHECK FAILED - The MIAPPE version* (Investigation sheet) is required.")
                     self.run = False
                 # if str(investigation_format[7]) not in valid_investigation_formats_dic['col8']:
                     # self.logs.append("CHECK FAILED - The Associatied publication (Investigation sheet) is incorrectly formated.")
                     # self.run = False
 
-            elif investigation_header == valid_investigation_header2:
-                self.logs.append("CHECK PASSED - The Investigation sheet has a valid header (column name/number).")
+            elif investigation_header == valid_investigation_header2 or investigation_header == valid_investigation_header3:
+                # Check if Rows are well named
+                if self.sheet_df.iloc[1:, 0] == valid_investigation_header1:
+                    self.logs.append("CHECK PASSED - The Investigation sheet has a valid header (column name/number).")
+                else:
+                    self.logs.append("CHECK FAILED - The Investigation sheet has incorrect names used in the first column.")
+                    self.run = False
+
+                #Check if mandatory fields within Investigation sheet exist (not NaN)
+                if pd.isna(self.sheet_df.iloc[1,1]) == True:
+                    self.logs.append("CHECK FAILED - The Investigation ID* (Investigation sheet) is required.")
+                    self.run = False
+                if pd.isna(self.sheet_df.iloc[2,1]) == True:
+                    self.logs.append("CHECK FAILED - The Investigation ID* (Investigation sheet) is required.")
+                    self.run = False
+                if pd.isna(self.sheet_df.iloc[3,1]) == True:
+                    self.logs.append("CHECK FAILED - The Investigation ID* (Investigation sheet) is required.")
+                    self.run = False
+                if pd.isna(self.sheet_df.iloc[7,1]) == True:
+                    self.logs.append("CHECK FAILED - The Investigation ID* (Investigation sheet) is required.")
+                    self.run = False
 
             else: 
                 self.logs.append("CHECK FAILED - The Investigation sheet has an invalid header (column name/number).")
