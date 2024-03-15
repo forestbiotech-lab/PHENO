@@ -64,8 +64,8 @@ class Miappe_validator:
         self.logs.append(datetime.now() - startTime)
         # Check Investigation Sheet Header
         try:
-            self.sheet_df = pd.read_excel(self.input_file, 'Investigation')
-            self.logs.append(self.sheet_df.iloc[:, 0])
+            self.sheet_df = pd.read_excel(self.complete_excel, 'Investigation')
+            self.logs.append(self.sheet_df.columns[0])
             # Remove '*' characters, which indicate mandatory columns to fill
             investigation_header = [ele.replace('*', '') for ele in list(self.sheet_df)]
 
