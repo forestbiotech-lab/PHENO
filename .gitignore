@@ -115,3 +115,6 @@ data/virtuoso/*
 
 #Cross container volume mount
 uploads/
+
+#Python specific files
+validator/__pycache__
