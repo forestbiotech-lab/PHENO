@@ -15,13 +15,13 @@ OntoBrAPI has 3 main functions based on international standards:
 - Data sharing (BrAPI)
 
 ### 1) Data submission
-OntoBrAPI runs on a web server, which provides a Graphical User Interface (GUI) that allows the conversion of the MIAPPE spreadsheet into n-triples format. The GUI allows the user to dynamically map the MIAPPE spreadsheet to the appropriate PPEO ontological properties using a JavaScript Object Notation (JSON). The user can also start from an initial mapping in JSON and adjust any fields deemed necessary. The GUI uses the constraints coded in the ontology to validate the mapping. As an example the data types allowed for each of the data properties is enforced by the GUI, which are inherited from the rules in the ontology; the same goes for the object properties that can link classes and the data properties that can annotate the classes.
+OntoBrAPI runs on a web server, which provides a Graphical User Interface (GUI) that allows the conversion of the MIAPPE spreadsheet into n-triples format. The GUI allows the user to dynamically map the MIAPPE spreadsheet to the appropriate PPEO ontological properties using a JavaScript Object Notation (JSON). The user can also start from an initial mapping in JSON and adjust any fields deemed necessary. The GUI uses the constraints coded in the ontology to validate the mapping. As an example, the data types allowed for each of the data properties is enforced by the GUI, which are inherited from the rules in the ontology; the same goes for the object properties that can link classes and the data properties that can annotate classes.
 
 ### 2) Data Storage 
-OntoBrAPI relies on [OpenLink Virtuoso](https://docs.openlinksw.com/virtuoso/) to store triples and builds a management system for data curators to validate datasets and select which datasets are ready for sharing.
+OntoBrAPI relies on [OpenLink Virtuoso](https://docs.openlinksw.com/virtuoso/) to store triples and builds a management system for data curators to validate datasets and select which ones are ready for sharing.
 
 ### 3) Data Sharing
-OntoBrAPI provides a BrAPI endpoint which delivers data in the triple store as JSON. This module allows administratores to update the data properties mapped to the respective JSON output in acordance with the [BrAPI specification](https://brapi.org/specification). 
+OntoBrAPI provides a BrAPI endpoint which delivers data in the triple store as JSON. This module allows administrators to update the data properties mapped to the respective JSON output in acordance with the [BrAPI specification](https://brapi.org/specification). 
 
 
 
@@ -48,11 +48,11 @@ bash setup.sh
 ```
 
 ## Setup a development environment
-This solution is the best if you want to debug a particular module and deal with the dependencies directly. Most containers are based on node will others are python. Refere to the docker file to check the appropriate setup of each module. To get the files on your setup use git.
+This solution is the best if you want to debug a particular module and deal with the dependencies directly. Most containers are based on node while others are on python. Refer to the dockerfile to check the appropriate setup of each module. To get the files on your setup use git.
 
 Clone repo and init Submodules, replace repository url based on the access to the project. git@github.com...... or https://github.com.......
 
-**For collaboratores use this**:
+**For collaborators use:**:
 ``` bash
 git clone git@github.com:forestbiotech-lab/ontoBrAPI.git
 cd ontoBrapi
@@ -60,7 +60,7 @@ git submodule init
 git submodule update
 git checkout master
 ``` 
-**For other users try this**:
+**For other users use:**:
 ``` bash
 git clone http://github.com/forestbiotech-lab/ontoBrAPI.git
 cd ontoBrapi
@@ -99,7 +99,7 @@ PORT=3010 npm start
 ```
 
 # SparQL
-This sections describes basic usage of SparQL, but please refere to the [Wiki page](https://github.com/forestbiotech-lab/ontoBrAPI/wiki/SparQL) for more details. The SparQL query editor is accessible on port 8890 (ex: localhost:8890/sparql) and is referenced in docker-compose as DB. Currently, SparQL queries are executed by [OpenLink Virtuoso](https://docs.openlinksw.com/virtuoso/). 
+This sections describes basic usage of SparQL, but please refer to the [Wiki page](https://github.com/forestbiotech-lab/ontoBrAPI/wiki/SparQL) for more details. The SparQL query editor is accessible on port 8890 (ex: localhost:8890/sparql) and is referenced in docker-compose as DB. Currently, SparQL queries are executed by [OpenLink Virtuoso](https://docs.openlinksw.com/virtuoso/). 
 
 Default user and password are: **dba** 
 
