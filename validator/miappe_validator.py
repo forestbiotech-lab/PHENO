@@ -15,6 +15,8 @@ class Miappe_validator:
 #   ---   Initiate class properties and check Input File extension  ---
     
     def __init__(self, input_file):
+        self.sheet_df = None
+        self.valid_sheets = None
         self.logs = ["  --- OntoBrAPI - Input File Validity Report ---  "]
         self.run = True
         # Loads file
@@ -31,16 +33,15 @@ class Miappe_validator:
             self.logs = ["CHECK FAILED - Invalid input file"]
             self.run = False
 
-
     #  -  Check sheet number & sheet names  -
-            
     def check_input_file(self):
         # These are all valid sheet names for a MIAPPE compliant excel file
-        valid_sheet_names = ["Investigation", "Study", "Person", "Data file", "Biological Material", "Sample",
-                             "Observation Unit", "Environment", "Factor", "Exp. Factor", "Observed Variable", "Event"]
+        valid_sheet_names = ("investigation", "study", "person", "data file", "biological material", "sample",
+                             "observation unit", "environment", "factor", "exp. factor", "observed variable", "event")
 
         # Check the number of input sheet names that are valid or not
-        self.valid_sheets = [i for i in self.sheetsList if i in valid_sheet_names]
+        table = str.maketrans("_", " ")
+        self.valid_sheets = [sheet for sheet in self.sheetsList if sheet.lower().translate(table) in valid_sheet_names]
         if len(self.valid_sheets) < 11:
             self.logs.append(
                     "CHECK FAILED - The input file has " + str(len(self.valid_sheets)) + 
@@ -55,15 +56,30 @@ class Miappe_validator:
                     "CHECK WARNING - The input file has " + str(len(self.sheetsList)) + 
                     " sheets, which is more than the minimum 11 valid sheets required. Additional sheets may be discarded.")
 
+    def name_of_similar_sheet(self, sheet_name):
+        if sheet_name in self.sheetsList:
+            return sheet_name
+        else:
+            try:
+                if " " in sheet_name:
+                    sheet: str
+                    table = str.maketrans(" ", "_")
+                    sheet_name = sheet_name.lower().translate(table)
+                    return self.sheetsList[[idx for idx, sheet in enumerate(self.sheetsList) if "_" in sheet and
+                                                 sheet.lower().translate(table) == sheet_name][0]]
+            except ValueError:
+                # Defers the error
+                return sheet_name
 
     #  -  Check Investigation Sheet  -
     # REDO SECTION TO ALLOW MIAPPE TEMPLATE (TRANSPOSED VERSION)
-
     def CheckInvestigationSheet(self):
         self.logs.append("investigation" + str(datetime.now() - startTime))
         # Check Investigation Sheet Header
         try:
-            self.sheet_df = pd.read_excel(self.complete_excel, 'Investigation')
+            sheet_name = "Investigation"
+            self.sheet_df = pd.read_excel(self.complete_excel, self.name_of_similar_sheet(sheet_name))
+
             self.logs.append(self.sheet_df.columns[0])
             # Remove '*' characters, which indicate mandatory columns to fill
             investigation_header = [ele.replace('*', '') for ele in list(self.sheet_df)]
@@ -263,7 +279,8 @@ class Miappe_validator:
     def CheckDatafileSheet(self):
         # Check Data File Sheet Header (In MIAPPE specs it is named Data File)
         try:
-            self.sheet_df = pd.read_excel(self.input_file, 'Data file')
+            sheet_name = "Data file"
+            self.sheet_df = pd.read_excel(self.complete_excel, self.name_of_similar_sheet(sheet_name))
             # Remove '*' characters, which indicate mandatory columns to fill
             datafile_header = [ele.replace('*', '') for ele in list(self.sheet_df)]
 
@@ -305,7 +322,8 @@ class Miappe_validator:
     def CheckBiologicalMaterialSheet(self):
         # Check Biological Material Sheet Header
         try:
-            self.sheet_df = pd.read_excel(self.input_file, 'Biological Material')
+            sheet_name = "Biological Material"
+            self.sheet_df = pd.read_excel(self.complete_excel, self.name_of_similar_sheet(sheet_name))
             # Remove '*' characters, which indicate mandatory columns to fill
             biomaterial_header = [ele.replace('*', '') for ele in list(self.sheet_df)]
 
@@ -471,7 +489,8 @@ class Miappe_validator:
     def CheckObservationUnitSheet(self):
         # Check Observation Unit Sheet Header (In MIAPPE specs it's named Environment Factor)
         try:
-            self.sheet_df = pd.read_excel(self.input_file, 'Observation Unit')
+            sheet_name = "Investigation"
+            self.sheet_df = pd.read_excel(self.complete_excel, self.name_of_similar_sheet('Observation Unit'))
             # Remove '*' characters, which indicate mandatory columns to fill
             obsunit_header = [ele.replace('*', '') for ele in list(self.sheet_df)]
 
@@ -526,7 +545,8 @@ class Miappe_validator:
     def CheckObservedVariableSheet(self):
         # Check Observed Variable Sheet Header
         try:
-            self.sheet_df = pd.read_excel(self.input_file, 'Observed Variable')
+            sheet_name = "Observed Variable"
+            self.sheet_df = pd.read_excel(self.complete_excel, self.name_of_similar_sheet(sheet_name))
             # Remove '*' characters, which indicate mandatory columns to fill
             obsvariable_header = [ele.replace('*', '') for ele in list(self.sheet_df)]
 
