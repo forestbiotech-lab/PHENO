@@ -39,7 +39,7 @@ echo \
   $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
   sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 sudo apt-get update
-sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 sleep 10;
 sudo usermod -aG docker ${USERNAME}
 sudo systemctl start docker
@@ -49,12 +49,15 @@ sudo chmod +x /usr/local/bin/docker-compose
 sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
 
 #Login to USERNAME and finish install
-sudo su ${USERNAME}
 
-wget https://raw.githubusercontent.com/forestbiotech-lab/ontoBrAPI/master/reposetup.sh -O reposetup.sh
-sudo --user ${USERNAME} bash reposetup.sh
+sudo wget https://raw.githubusercontent.com/forestbiotech-lab/ontoBrAPI/master/reposetup.sh -O /home/${USERNAME}/reposetup.sh
+sudo chown ${USERNAME}:${USERNAME} /home/${USERNAME}/reposetup.sh
+sudo chmod 777 /home/${USERNAME}/reposetup.sh
+sudo --user ${USERNAME} /home/${USERNAME}/./reposetup.sh
+cd /home/brunocosta
+sudo echo -e "Finished install, for user ${USERNAME}, repos are located in the ~/git folder.\n To remove this message delete the last lines in ~/.bashrc" >> /home/${USERNAME}/.bashrc 
 echo "DONE - Finished install"
-
+sudo su ${USERNAME}
 
 
 
