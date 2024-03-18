@@ -14,6 +14,9 @@ OntoBrAPI has 3 main functions based on international standards:
 - Data storage (RDF)
 - Data sharing (BrAPI)
 
+For more details check out OntoBrAPI's [documentation](https://ontobrapi-docs.readthedocs.io/) on READ the DOCS
+
+
 ### 1) Data submission
 OntoBrAPI runs on a web server, which provides a Graphical User Interface (GUI) that allows the conversion of the MIAPPE spreadsheet into n-triples format. The GUI allows the user to dynamically map the MIAPPE spreadsheet to the appropriate PPEO ontological properties using a JavaScript Object Notation (JSON). The user can also start from an initial mapping in JSON and adjust any fields deemed necessary. The GUI uses the constraints coded in the ontology to validate the mapping. As an example, the data types allowed for each of the data properties is enforced by the GUI, which are inherited from the rules in the ontology; the same goes for the object properties that can link classes and the data properties that can annotate classes.
 
