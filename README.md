@@ -130,9 +130,5 @@ web       |  25M |   1.03Gb
 brapi     |   ?M |
 **TOTAL**   | **~520M**|   **~6.00Gb**  
 
-~
-+ 0.9Gb Node
 
-
-
-HD 16GB 
+Runs on **t3.micro** instance of AWS. (2vcpu, 1GbRAM, 16Gb HDD)
