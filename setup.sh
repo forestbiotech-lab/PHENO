@@ -54,9 +54,8 @@ sudo wget https://raw.githubusercontent.com/forestbiotech-lab/ontoBrAPI/master/r
 sudo chown ${USERNAME}:${USERNAME} /home/${USERNAME}/reposetup.sh
 sudo chmod 777 /home/${USERNAME}/reposetup.sh
 sudo --user ${USERNAME} /home/${USERNAME}/./reposetup.sh
-cd /home/brunocosta
-sudo echo -e "Finished install, for user ${USERNAME}, repos are located in the ~/git folder.\n To remove this message delete the last lines in ~/.bashrc" >> /home/${USERNAME}/.bashrc 
-echo "DONE - Finished install"
+sudo cd /home/${USERNAME}
+echo -e "Finished install, for ${USERNAME}, repos are located in the ~/git folder."
 sudo su ${USERNAME}
 
 
