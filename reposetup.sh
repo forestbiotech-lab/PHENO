@@ -20,5 +20,8 @@ git checkout master
 cd ..
 
 docker-compose up -d
+git submodule update
+git submodule sync
+
 
 exit 0
