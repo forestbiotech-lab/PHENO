@@ -54,10 +54,9 @@ sudo wget https://raw.githubusercontent.com/forestbiotech-lab/ontoBrAPI/master/r
 sudo chown ${USERNAME}:${USERNAME} /home/${USERNAME}/reposetup.sh
 sudo chmod 777 /home/${USERNAME}/reposetup.sh
 sudo --user ${USERNAME} /home/${USERNAME}/./reposetup.sh
-sudo cd /home/${USERNAME}
 echo -e "Finished install, for ${USERNAME}, repos are located in the ~/git folder."
 echo "Now open up http://$(dig +short myip.opendns.com @resolver1.opendns.com) in your browser to test this project"
-sudo su ${USERNAME}
+sudo sh -c "cd /home/${USERNAME}; sudo su ${USERNAME}"
 
 
 
