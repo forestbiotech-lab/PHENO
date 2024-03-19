@@ -49,6 +49,7 @@ services:
         - ./.config.json/:/usr/src/app/.config.json
       depends_on:
         - db
+        - mongo
       networks:
         - backend
 
