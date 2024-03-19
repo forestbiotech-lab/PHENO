@@ -28,7 +28,7 @@ class MyServer(BaseHTTPRequestHandler):
         try:
             self.logs = mv(body['file']).run_miappe_validator()
         except Exception as e:
-            self.logs.append(str(e))
+            self.logs.append(f"CHECK FAILED - {str(e)}")
         self.send_response(200)
         self.send_header("Content-type", "text/html")
         self.end_headers()
@@ -38,6 +38,7 @@ class MyServer(BaseHTTPRequestHandler):
             self.wfile.write(bytes(logLine, "utf-8"))
             self.wfile.write(bytes("<br>", "utf-8"))
         self.wfile.write(bytes("</p></body></html>", "utf-8"))
+
 
 if __name__ == "__main__":
     webServer = HTTPServer((hostName, serverPort), MyServer)

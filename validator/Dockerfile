@@ -8,6 +8,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY webserver.py .
 COPY miappe_validator.py . 
+COPY validationstructure.json
 
 LABEL version="1.0"
 
