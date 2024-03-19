@@ -1,0 +1,134 @@
+{
+  "Investigation":{
+    "valid_header1" : [
+      "Investigation unique ID", "Investigation title", "Investigation description","Submission date", "Public release date", "License", "MIAPPE version","Associated publication"
+    ],
+    "valid_header2" : [
+      "Field", "Value", "Definition", "Example", "Format"
+    ],
+    "valid_header3" : [
+      "Field", "Value"
+    ],
+    "can_be_empty":false,
+    "mandatory_columns":[
+      "Investigation unique ID","Investigation title","Investigation description","MIAPPE version"
+    ]
+  }, 
+  "Study":{
+    "valid_header1" : ["Study unique ID", "Study title", "Study description", "Start date of study",
+                               "End date of study", "Contact institution", "Geographic location (country)",
+                               "Experimental site name", "Geographic location (latitude)",
+                               "Geographic location (longitude)", "Geographic location (altitude)",
+                               "Description of the experimental design", "Type of experimental design",
+                               "Observation unit level hierarchy", "Observation unit description",
+                               "Description of growth facility", "Type of growth facility", "Cultural practices",
+                               "Map of experimental design"],
+    "valid_header2" : ["Investigation unique ID", "Study unique ID", "Study title", "Study description",
+                               "Start date of study", "End date of study", "Contact institution",
+                               "Geographic location (country)", "Experimental site name", "Geographic location (latitude)",
+                               "Geographic location (longitude)", "Geographic location (altitude)",
+                               "Description of statistical design", "Type of statistical design",
+                               "Observation unit level hierarchy", "Observation unit description",
+                               "Description of growth facility", "Type of growth facility", "Cultural practices",
+                               "Map of experimental design"],
+    "valid_header3" : ["Investigation unique ID", "Investigation title", "Study unique ID", "Study title",
+                                "Study description", "Start date of study", "End date of study", "Contact institution",
+                               "Geographic location (country)", "Experimental site name", "Geographic location (latitude)",
+                               "Geographic location (longitude)", "Geographic location (altitude)",
+                               "Description of statistical design", "Type of statistical design",
+                               "Observation unit level hierarchy", "Observation unit description",
+                               "Description of growth facility", "Type of growth facility", "Cultural practices",
+                               "Map of experimental design"]
+  }, 
+  "Person":{
+    "valid_header1" : ["Person name", "Person email", "Person ID", "Person role", "Person affiliation"],
+    "valid_header2" : ["Study unique ID", "Person name", "Person email", "Person ID", "Person role",
+                                    "Person affiliation"],
+    "valid_header3" : ["Field", "Study unique ID", "Person name*", "Person email", "Person ID", "Person role*",
+                                    "Person affiliation*"],
+    "can_be_empty" : false,
+    "mandatory_columns": ["Study unique ID","Person name","Person role", "The Person affiliation"]
+  }, 
+  "Data file":{
+    "valid_header1" : ["Data file link", "Data file description", "Data file version"],
+    "valid_header2" : ["Study unique ID", "Data file link", "Data file description", "Data file version"],
+    "valid_formats" : ["[dtype('O'), dtype('O'), dtype('O'), dtype('O')]",
+                                      "[dtype('O'), dtype('O'), dtype('O'), dtype('float64')]"]
+  }, 
+  "Biological Material":{
+    "valid_header1" : ["Biological material ID", "Organism", "Genus", "Species", "Infraspecific name",
+                                        "Biological material latitude", "Biological material longitude",
+                                        "Biological material altitude", "Biological material coordinates uncertainty",
+                                        "Biological material preprocessing",
+                                        "Material source ID (Holding institute/stock centre, accession)",
+                                        "Material source DOI", "Material source latitude", "Material source longitude",
+                                        "Material source altitude", "Material source coordinates uncertainty",
+                                        "Material source description"],
+    "valid_header2" : ["Study unique ID", "Biological material ID", "Organism", "Genus", "Species",
+                                        "Biological material latitude", "Biological material longitude",
+                                        "Biological material altitude", "Biological material coordinates uncertainty",
+                                        "Biological material preprocessing", "Material source ID", "Material source DOI",
+                                        "Material source latitude", "Material source longitude", "Material source altitude",
+                                        "Material source coordinates uncertainty", "Material source description"],
+    "valid_header3" : [
+      "Field", "Value"
+    ],
+    "valid_formats" : [
+      "[dtype('O'), dtype('O'), dtype('O'), dtype('float64'), dtype('float64'), dtype('float64'), dtype('float64'), dtype('float64'), dtype('float64'), dtype('float64'), dtype('float64'), dtype('float64'), dtype('float64'), dtype('float64'), dtype('float64'), dtype('float64'), dtype('float64')]",
+      "[dtype('O'), dtype('O'), dtype('O'), dtype('O'), dtype('O'), dtype('float64'), dtype('float64'), dtype('O'), dtype('float64'), dtype('float64'), dtype('O'), dtype('O'), dtype('float64'), dtype('float64'), dtype('float64'), dtype('float64'), dtype('O')]",
+      "[dtype('O'), dtype('O'), dtype('O'), dtype('O'), dtype('O'), dtype('float64'), dtype('float64'), dtype('O'), dtype('float64'), dtype('float64'), dtype('O'), dtype('float64'), dtype('float64'), dtype('float64'), dtype('float64'), dtype('float64'), dtype('O')]",
+      "[dtype('O'), dtype('O'), dtype('O'), dtype('O'), dtype('O'), dtype('float64'), dtype('float64'), dtype('float64'), dtype('O'), dtype('O'), dtype('float64'), dtype('float64'), dtype('float64'), dtype('float64'), dtype('float64'), dtype('float64'), dtype('float64')]"]
+  }, 
+  "Sample":{
+    "valid_header1" : ["Sample ID", "Plant structure development stage", "Plant anatomical entity",
+                                    "Sample description", "Collection date", "External ID"],
+    "valid_header2" : ["Observation unit ID", "Sample ID", "Plant structure development stage",
+                                    "Plant anatomical entity", "Sample description", "Collection date", "External ID"]
+  },
+  "Observation Unit":{
+    "valid_header1" : ["Observation unit ID", "Observation unit type", "External ID", "Spatial distribution",
+                                    "Observation Unit factor value"],
+    "valid_header2" : ["Study unique ID", "Biological Material ID", "Observation unit ID",
+                                    "Observation unit type", "External ID", "Spatial distribution",
+                                    "Observation unit factor value"]
+  }, 
+  "Environment":{
+    "valid_header1" : ["Environment parameter", "Environment parameter value"],
+    "valid_header2" : ["Study unique ID", "Environment parameter", "Environment parameter value"]
+  }, 
+  "Factor":{
+    "valid_header1" : ["Experimental parameter", "Experimental parameter value"],
+    "valid_header2" : ["Study unique ID", "Factor type", "Factor description", "Factor values"]
+  }, 
+  "Exp. Factor":{
+    "valid_header1" : [
+      "Investigation unique ID", "Investigation title", "Investigation description","Submission date", "Public release date", "License", "MIAPPE version","Associated publication"
+    ],
+    "valid_header2" : [
+      "Field", "Value", "Definition", "Example", "Format"
+    ],
+    "valid_header3" : [
+      "Field", "Value"
+    ]
+  }, 
+  "Observed Variable":{
+    "valid_header1" : ["Variable ID", "Variable name", "Variable accession number", "Trait",
+                                        "Trait accession number", "Method", "Method accession number", "Method description",
+                                        "Reference associated to the method", "Scale", "Scale accession number", "Time scale"],
+    "valid_header2" : ["Study unique ID", "Variable ID", "Variable name", "Variable accession number",
+                                        "Trait", "Trait accession number", "Method", "Method accession number",
+                                        "Method description", "Reference associated to the method", "Scale",
+                                        "Scale accession number", "Time scale"]
+  }, 
+  "Event":{
+    "valid_header1" : ["Event type", "Event accession number", "Event description", "Event date"],
+    "valid_header2" : ["Study unique ID", "Observation unit ID", "Event type", "Event acession number","Event description", "Event date"
+    ],
+    "valid_formats" : ["[dtype('O'), dtype('float64'), dtype('O'), dtype('float64'), dtype('float64'), dtype('<M8[ns]')]",
+                                       "[dtype('O'), dtype('float64'), dtype('O'), dtype('float64'), dtype('float64'), dtype('O')]",
+                                       "[dtype('O'), dtype('O'), dtype('O'), dtype('float64'), dtype('O'), dtype('O')]",
+                                       "[dtype('O'), dtype('O'), dtype('O'), dtype('float64'), dtype('O'), dtype('<M8[ns]')]",
+                                       "[dtype('O'), dtype('O'), dtype('O'), dtype('O'), dtype('O'), dtype('<M8[ns]')]",
+                                       "[dtype('O'), dtype('O'), dtype('O'), dtype('O'), dtype('O'), dtype('O')]"]
+  }
+}

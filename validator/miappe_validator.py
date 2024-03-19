@@ -1,7 +1,9 @@
 # Script to read and validate input MIAPPE Compliant Excel file.
 
 # Read required packages
+from pyexcel_ods3 import get_data
 import pandas as pd
+import json
 import sys
 # Check script execution time
 from datetime import datetime
@@ -17,15 +19,24 @@ class Miappe_validator:
     def __init__(self, input_file):
         self.sheet_df = None
         self.valid_sheets = None
+        self.valid_structure = json.load(open("validationstructure.json"))
         self.logs = ["  --- OntoBrAPI - Input File Validity Report ---  "]
         self.run = True
         # Loads file
         self.input_file = input_file
         try:
-            if self.input_file.lower().endswith(('.xlsx', '.xls', 'ods')):
+            if self.input_file.lower().endswith(('.xlsx', '.xls')):
                 self.logs.append("CHECK PASSED - Valid input file extension")
+                # microsoft
+                self.filetype = "ms"
                 self.complete_excel = pd.ExcelFile(input_file)
                 self.sheetsList = self.complete_excel.sheet_names
+            elif self.input_file.lower().endswith(('.ods')):
+                # open docs
+                self.filetype = "od"
+                ods = get_data(input_file)
+                self.complete_excel = {key: pd.DataFrame(ods[key], columns=ods[key][0]) for key in ods.keys()}
+                self.sheetsList = self.complete_excel.keys()
             else:
                 self.logs.append("CHECK FAILED - Invalid input file extension")
                 self.run = False
@@ -36,12 +47,9 @@ class Miappe_validator:
     #  -  Check sheet number & sheet names  -
     def check_input_file(self):
         # These are all valid sheet names for a MIAPPE compliant excel file
-        valid_sheet_names = ("investigation", "study", "person", "data file", "biological material", "sample",
-                             "observation unit", "environment", "factor", "exp. factor", "observed variable", "event")
-
+        valid_sheet_names = list(self.valid_structure.keys())
         # Check the number of input sheet names that are valid or not
-        table = str.maketrans("_", " ")
-        self.valid_sheets = [sheet for sheet in self.sheetsList if sheet.lower().translate(table) in valid_sheet_names]
+        self.valid_sheets = [sheet for sheet in self.sheetsList if sheet in valid_sheet_names]
         if len(self.valid_sheets) < 11:
             self.logs.append(
                     "CHECK FAILED - The input file has " + str(len(self.valid_sheets)) + 
@@ -56,6 +64,7 @@ class Miappe_validator:
                     "CHECK WARNING - The input file has " + str(len(self.sheetsList)) + 
                     " sheets, which is more than the minimum 11 valid sheets required. Additional sheets may be discarded.")
 
+    # Deprecation not really feasible since the usage of difernte worksheet name will cause problems with mapping
     def name_of_similar_sheet(self, sheet_name):
         if sheet_name in self.sheetsList:
             return sheet_name
@@ -71,6 +80,86 @@ class Miappe_validator:
                 # Defers the error
                 return sheet_name
 
+    def load_worksheet(self, sheet_name):
+        if self.filetype == "od":
+            self.sheet_df = self.complete_excel[sheet_name].drop(0)
+            self.sheet_df = self.sheet_df.reset_index(drop=True)
+            self.logs.append(list(self.complete_excel.keys())[0])
+            return [ele.replace('*', '') for ele in list(self.sheet_df)]
+        else:
+            self.sheet_df = pd.read_excel(self.complete_excel, self.name_of_similar_sheet(sheet_name))
+            self.logs.append(self.sheet_df.columns[0])
+            # Remove '*' characters, which indicate mandatory columns to fill
+            return [ele.replace('*', '') for ele in list(self.sheet_df)]
+
+    def validate_headers(self, header, sheet_name):
+        if (header == self.valid_structure[sheet_name]['valid_header1'] or
+                header == self.valid_structure[sheet_name]['valid_header2']):
+            self.logs.append(f'CHECK PASSED - The {sheet_name} sheet has a valid header (column name/number).')
+            self.validate_data(sheet_name)
+
+        elif header == self.valid_structure[sheet_name]['valid_header3'] and sheet_name == "Person":
+            ###### Person specific??????
+            # Delete first column and then first three rows of the person dataframe
+            self.sheet_df.drop(["Definition", "Example", "Format"], axis=0, inplace=True)
+            self.sheet_df.drop("Field", axis=1, inplace=True)
+
+        elif "valid_header3" in self.valid_structure[sheet_name]:
+            if header == self.valid_structure[sheet_name]['valid_header3']:
+                # Is used in Study for vitis exception which will be removed.
+                self.logs.append(f'CHECK PASSED - The {sheet_name} sheet has a valid header (column name/number).')
+                self.validate_data(sheet_name)
+        else:
+            self.logs.append(f"CHECK FAILED - The {sheet_name} sheet has an invalid header (column name/number).")
+            self.run = False
+
+    def validate_data(self, sheet_name):
+        if 'can_be_empty' in self.valid_structure[sheet_name]:
+            if not self.valid_structure[sheet_name]['can_be_empty']:
+                if len(self.sheet_df.index) != 0:
+                    for mandatory_column in self.valid_structure[sheet_name]['mandatory_columns']:
+                        if mandatory_column in self.sheet_df:
+                            if pd.isna(self.sheet_df[mandatory_column][0]):
+                                self.logs.append(
+                                    f"CHECK FAILED - The {mandatory_column} column ({sheet_name} sheet) is mandatory.")
+                                self.run = False
+                        elif mandatory_column + "*" in self.sheet_df:
+                            if pd.isna(self.sheet_df[mandatory_column + "*"][0]):
+                                self.logs.append(
+                                    f"CHECK FAILED - The {mandatory_column} column ({sheet_name} sheet) is mandatory.")
+                                self.run = False
+                else:
+                    self.logs.append(f"CHECK FAILED - The {sheet_name} Sheet is empty.")
+                    self.run = False
+            # This means that the Excel is the template from MIAPPE Github
+
+    def validate_dtypes(self, sheet_name):
+        sheet_format = self.sheet_df.dtypes
+        # TODO - (Or not) Doesn't validate if "ODS" format since dataframe is built from nested list
+        if "valid_formats" in self.valid_structure[sheet_name]:
+            # Format 1 - Mandatory fields must have valid formats, while the rest can be empty ('float64')
+            # Format 2 - Rice file
+            # Format 3 - Valid file
+            # Format 4 - Vitis file
+            if str(list(sheet_format)) in self.valid_structure[sheet_name]['valid_formats']:
+                self.logs.append(
+                    f"CHECK PASSED - The {sheet_name} sheet has a valid format (properly formatted fields).")
+            else:
+                self.logs.append(
+                    f"CHECK WARNING - The {sheet_name} sheet has invalid formats (some fields are incorrectly formatted).")
+                self.run = True
+
+    def check_sheet(self, sheet_name):
+        try:
+
+            header = self.load_worksheet(sheet_name)
+            self.validate_headers(header, sheet_name)
+            self.validate_dtypes(sheet_name)
+
+        except ValueError:
+            self.logs.append(f"CHECK FAILED - The {sheet_name} sheet cannot be opened.")
+            self.run = False
+
     #  -  Check Investigation Sheet  -
     # REDO SECTION TO ALLOW MIAPPE TEMPLATE (TRANSPOSED VERSION)
     def CheckInvestigationSheet(self):
@@ -78,11 +167,16 @@ class Miappe_validator:
         # Check Investigation Sheet Header
         try:
             sheet_name = "Investigation"
-            self.sheet_df = pd.read_excel(self.complete_excel, self.name_of_similar_sheet(sheet_name))
-
-            self.logs.append(self.sheet_df.columns[0])
-            # Remove '*' characters, which indicate mandatory columns to fill
-            investigation_header = [ele.replace('*', '') for ele in list(self.sheet_df)]
+            investigation_header = None
+            if self.filetype == "od":
+                self.sheet_df = self.complete_excel[self.name_of_similar_sheet(sheet_name)]
+                investigation_header = [ele.replace('*', '') for ele in list(self.sheet_df)]
+                self.logs.append(list(self.complete_excel.keys())[0])
+            else:
+                self.sheet_df = pd.read_excel(self.complete_excel, self.name_of_similar_sheet(sheet_name))
+                self.logs.append(self.sheet_df.columns[0])
+                # Remove '*' characters, which indicate mandatory columns to fill
+                investigation_header = [ele.replace('*', '') for ele in list(self.sheet_df)]
 
             valid_investigation_header1 = ["Investigation unique ID", "Investigation title", "Investigation description",
                                           "Submission date", "Public release date", "License", "MIAPPE version",
@@ -98,7 +192,7 @@ class Miappe_validator:
                 #                                  7: ["dtype('O')", "dtype('float64')"], 8: ["dtype('O')", "dtype('float64')"]}
                 
                 investigation_format = self.sheet_df.dtypes
-                self.logs.append(investigation_format)
+                #self.logs.append(investigation_format)
                 
                 # Checks if mandatory columns have values (at least in the first position)
 
@@ -124,18 +218,19 @@ class Miappe_validator:
                     self.logs.append("CHECK FAILED - The Investigation sheet has incorrect names in the Field.")
                     self.run = False
 
-                #Check if mandatory fields within Investigation sheet exist (not NaN)
+                # The transposed version Original Github
+                # Check if mandatory fields within Investigation sheet exist (not NaN)
                 if pd.isna(self.sheet_df.iloc[1,1]) == True:
                     self.logs.append("CHECK FAILED - The Investigation ID* (Investigation sheet) is required.")
                     self.run = False
                 if pd.isna(self.sheet_df.iloc[2,1]) == True:
-                    self.logs.append("CHECK FAILED - The Investigation ID* (Investigation sheet) is required.")
+                    self.logs.append("CHECK FAILED - The Investigation Title* (Investigation sheet) is required.")
                     self.run = False
                 if pd.isna(self.sheet_df.iloc[3,1]) == True:
-                    self.logs.append("CHECK FAILED - The Investigation ID* (Investigation sheet) is required.")
+                    self.logs.append("CHECK FAILED - The Investigation Description* (Investigation sheet) is required.")
                     self.run = False
                 if pd.isna(self.sheet_df.iloc[7,1]) == True:
-                    self.logs.append("CHECK FAILED - The Investigation ID* (Investigation sheet) is required.")
+                    self.logs.append("CHECK FAILED - The MIAPPE Version* (Investigation sheet) is required.")
                     self.run = False
 
             else: 
@@ -155,9 +250,17 @@ class Miappe_validator:
         self.logs.append("study" + str(datetime.now() - startTime))
         # Check Study Sheet Header
         try:
-            self.sheet_df = pd.read_excel(self.input_file, 'Study')
-            # Remove '*' characters, which indicate mandatory columns to fill
-            study_header = [ele.replace('*', '') for ele in list(self.sheet_df)]
+            sheet_name = "Study"
+            header = None
+            if self.filetype == "od":
+                self.sheet_df = self.complete_excel[self.name_of_similar_sheet(sheet_name)]
+                header = [ele.replace('*', '') for ele in list(self.sheet_df)]
+                self.logs.append(list(self.complete_excel.keys())[0])
+            else:
+                self.sheet_df = pd.read_excel(self.complete_excel, self.name_of_similar_sheet(sheet_name))
+                self.logs.append(self.sheet_df.columns[0])
+                # Remove '*' characters, which indicate mandatory columns to fill
+                header = [ele.replace('*', '') for ele in list(self.sheet_df)]
 
             # Valid Study sheet Headers:
             valid_study_header1 = ["Study unique ID", "Study title", "Study description", "Start date of study",
@@ -186,7 +289,7 @@ class Miappe_validator:
                                "Description of growth facility", "Type of growth facility", "Cultural practices",
                                "Map of experimental design"]
 
-            if study_header == valid_study_header1 or study_header == valid_study_header2 or study_header == valid_study_header3:
+            if header == valid_study_header1 or header == valid_study_header2 or header == valid_study_header3:
                 self.logs.append("CHECK PASSED - The Study sheet has a valid header (column name/number).")
             else:
                 self.logs.append("CHECK FAILED - The Study sheet has an invalid header (column name/number).")
@@ -311,7 +414,6 @@ class Miappe_validator:
             else:
                 self.logs.append("CHECK FAILED - The Data File sheet has a invalid format (some fields are incorrectly formatted).")
                 self.run = False
-                #sys.exit(" - ERROR - Invalid Field Formats in Data File Sheet - ")
 
         except ValueError:
             self.logs.append("CHECK FAILED - The Data file sheet cannot be opened.")
@@ -376,55 +478,8 @@ class Miappe_validator:
             self.logs.append("CHECK FAILED - The Biological Material sheet cannot be opened.")
             self.run = False
 
-    #  -  Check Environment Sheet  -
 
-    def CheckEnvironmentSheet(self):
-        # Check Environment Sheet Header
-        # No format checking in this sheet (maybe implement, maybe not)
-        try:
-            self.sheet_df = pd.read_excel(self.input_file, 'Environment')
-            # Remove '*' characters, which indicate mandatory columns to fill
-            environment_header = [ele.replace('*', '') for ele in list(self.sheet_df)]
 
-            # Valid Environment sheet Headers:
-            valid_environment_header1 = ["Environment parameter", "Environment parameter value"]
-            valid_environment_header2 = ["Study unique ID", "Environment parameter", "Environment parameter value"]
-
-            if environment_header == valid_environment_header1 or environment_header == valid_environment_header2:
-                self.logs.append("CHECK PASSED - The Environment sheet has a valid header (column name/number).")
-            else:
-                self.logs.append("CHECK FAILED - The Environment sheet has an invalid header (column name/number).")
-                self.run = False
-                #sys.exit(" - ERROR - Invalid Header in Environment Sheet - ")
-
-        except ValueError:
-            self.logs.append("CHECK FAILED - The Environment sheet cannot be opened.")
-            self.run = False
-
-    #  -  Check Environment Factor Sheet  -
-
-    def CheckExperimentalFactorSheet(self):
-        # Check Experimental Factor Sheet Header (In MIAPPE specs it's named Environment Factor)
-        # No format checking in this sheet (maybe implement, maybe not)
-        try:
-            self.sheet_df = pd.read_excel(self.input_file, 'Factor')
-            # Remove '*' characters, which indicate mandatory columns to fill
-            expfactor_header = [ele.replace('*', '') for ele in list(self.sheet_df)]
-
-            # Valid Experimental Factor sheet Headers:
-            valid_expfactor_header1 = ["Experimental parameter", "Experimental parameter value"]
-            valid_expfactor_header2 = ["Study unique ID", "Factor type", "Factor description", "Factor values"]
-
-            if expfactor_header == valid_expfactor_header1 or expfactor_header == valid_expfactor_header2:
-                self.logs.append("CHECK PASSED - The Experimental Factor sheet has a valid header (column name/number).")
-            else:
-                self.logs.append("CHECK FAILED - The Experimental Factor sheet has an invalid header (column name/number).")
-                self.run = False
-                #sys.exit(" - ERROR - Invalid Header in Experimental Factor Sheet - ")
-
-        except ValueError:
-            self.logs.append("CHECK FAILED - The Experimental Factor sheet cannot be opened.")
-            self.run = False
 
 
     #  -  Check Event Sheet  -
@@ -483,103 +538,6 @@ class Miappe_validator:
             self.logs.append("CHECK FAILED - The Event sheet cannot be opened.")
             self.run = False
 
-
-    #  -  Check Observation Unit Sheet  -
-
-    def CheckObservationUnitSheet(self):
-        # Check Observation Unit Sheet Header (In MIAPPE specs it's named Environment Factor)
-        try:
-            sheet_name = "Investigation"
-            self.sheet_df = pd.read_excel(self.complete_excel, self.name_of_similar_sheet('Observation Unit'))
-            # Remove '*' characters, which indicate mandatory columns to fill
-            obsunit_header = [ele.replace('*', '') for ele in list(self.sheet_df)]
-
-            # Valid Observation Unit sheet Headers:
-            valid_obsunit_header1 = ["Observation unit ID", "Observation unit type", "External ID", "Spatial distribution",
-                                    "Observation Unit factor value"]
-            valid_obsunit_header2 = ["Study unique ID", "Biological Material ID", "Observation unit ID",
-                                    "Observation unit type", "External ID", "Spatial distribution",
-                                    "Observation unit factor value"]
-
-            if obsunit_header == valid_obsunit_header1 or obsunit_header == valid_obsunit_header2:
-                self.logs.append("CHECK PASSED - The Observation Unit sheet has a valid header (column name/number).")
-            else:
-                self.logs.append("CHECK FAILED - The Observation Unit sheet has an invalid header (column name/number).")
-                self.run = False
-                #sys.exit(" - ERROR - Invalid Header in Observation Unit Sheet - ")
-
-        except ValueError:
-            self.logs.append("CHECK FAILED - The Observation Unit sheet cannot be opened.")
-            self.run = False
-
-
-    #  -  Check Sample Sheet  -
-
-    def CheckSampleSheet(self):
-        # Check Sample Sheet Header
-        try:
-            self.sheet_df = pd.read_excel(self.input_file, 'Sample')
-            # Remove '*' characters, which indicate mandatory columns to fill
-            sample_header = [ele.replace('*', '') for ele in list(self.sheet_df)]
-
-            # Valid Sample sheet Headers:
-            valid_sample_header1 = ["Sample ID", "Plant structure development stage", "Plant anatomical entity",
-                                    "Sample description", "Collection date", "External ID"]
-            valid_sample_header2 = ["Observation unit ID", "Sample ID", "Plant structure development stage",
-                                    "Plant anatomical entity", "Sample description", "Collection date", "External ID"]
-
-            if sample_header == valid_sample_header1 or sample_header == valid_sample_header2:
-                self.logs.append("CHECK PASSED - The Sample sheet has a valid header (column name/number).")
-            else:
-                self.logs.append("CHECK FAILED - The Sample sheet has an invalid header (column name/number).")
-                self.run = False
-                #sys.exit(" - ERROR - Invalid Header in Sample Sheet - ")
-
-        except ValueError:
-            self.logs.append("CHECK FAILED - The Sample sheet cannot be opened.")
-            self.run = False
-
-
-    #  -  Check Observed Variable Sheet  -
-
-    def CheckObservedVariableSheet(self):
-        # Check Observed Variable Sheet Header
-        try:
-            sheet_name = "Observed Variable"
-            self.sheet_df = pd.read_excel(self.complete_excel, self.name_of_similar_sheet(sheet_name))
-            # Remove '*' characters, which indicate mandatory columns to fill
-            obsvariable_header = [ele.replace('*', '') for ele in list(self.sheet_df)]
-
-            # Valid Observed Variable sheet Headers:
-            valid_obsvariable_header1 = ["Variable ID", "Variable name", "Variable accession number", "Trait",
-                                        "Trait accession number", "Method", "Method accession number", "Method description",
-                                        "Reference associated to the method", "Scale", "Scale accession number", "Time scale"]
-            valid_obsvariable_header2 = ["Study unique ID", "Variable ID", "Variable name", "Variable accession number",
-                                        "Trait", "Trait accession number", "Method", "Method accession number",
-                                        "Method description", "Reference associated to the method", "Scale",
-                                        "Scale accession number", "Time scale"]
-
-            if obsvariable_header == valid_obsvariable_header1 or obsvariable_header == valid_obsvariable_header2:
-                self.logs.append("CHECK PASSED - The Observed Variable sheet has a valid header (column name/number).")
-            else:
-                self.logs.append("CHECK FAILED - The Observed Variable sheet has an invalid header (column name/number).")
-                self.run = False
-                #sys.exit(" - ERROR - Invalid Header in Observed Variable Sheet - ")
-
-        except ValueError:
-            self.logs.append("CHECK FAILED - The Observed Variable sheet cannot be opened.")
-            self.run = False
-
-
-
-
-    #       ----------        MAIN CODE        ----------
-
-    # Input File (read from above_script.js)
-
-    # input_file = 'Rice_Miappe_Test_v2.xlsx'
-    #input_file = sys.argv[1]
-
     # The input file should end in .xlsx, .xls or .ods
     # Additional excel-like files which may be considered (older versions): .xlsm; .xlsb; .xml; .xltx; .xlt; .xltm; .xlam; .xlc; xld; .xlk; .xlw; .xlr.
 
@@ -589,26 +547,14 @@ class Miappe_validator:
             self.check_input_file()
         if self.run == True:
             self.CheckInvestigationSheet()
-        if self.run == True:
-            self.CheckStudySheet()
-        if self.run == True:
-            self.CheckPersonSheet()
-        if self.run == True:
-            self.CheckDatafileSheet()
-        if self.run == True:
-            self.CheckBiologicalMaterialSheet()
-        if self.run == True:
-            self.CheckEnvironmentSheet()
-        if self.run == True:
-            self.CheckExperimentalFactorSheet()
-        if self.run == True:
-            self.CheckEventSheet()
-        if self.run == True:
-            self.CheckObservationUnitSheet()
-        if self.run == True:
-            self.CheckSampleSheet()
-        if self.run == True:
-            self.CheckObservedVariableSheet()
+            # self.check_sheet('Investigation')
+
+        # Skip Investigation
+        if self.run:
+            for sheet in list(self.sheetsList)[1:]:
+                if self.run and sheet in self.valid_structure:
+                    self.check_sheet(sheet)
+
 
         # Write miappe_validator_logs file:
         # Append File is Valid if self.run reaches the end as True
