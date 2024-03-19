@@ -116,5 +116,10 @@ data/virtuoso/*
 #Cross container volume mount
 uploads/
 
+
+# validator
+## Logs change on each run
+validator/miappe_validator_logs.txt
+
 #Python specific files
 validator/__pycache__
