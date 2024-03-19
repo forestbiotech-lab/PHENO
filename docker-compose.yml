@@ -36,6 +36,7 @@ services:
     volumes:
       - ./.config.json:/usr/src/app/.config.json
       - ./uploads:/usr/src/app/uploads   
+      - ./.git/modules/ontoBrAPI-node-docker/FETCH_HEAD:/usr/src/app/.FETCH_HEAD
     depends_on:
       - db
     networks:
