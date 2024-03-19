@@ -3,3 +3,4 @@ openpyxl
 pyarrow
 odfpy
 xlrd
+pyexcel_ods3
