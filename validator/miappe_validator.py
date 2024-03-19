@@ -14,8 +14,7 @@ startTime = datetime.now()
 
 class Miappe_validator:
 
-#   ---   Initiate class properties and check Input File extension  ---
-    
+    #   ---   Initiate class properties and check Input File extension  ---
     def __init__(self, input_file):
         self.sheet_df = None
         self.valid_sheets = None
@@ -299,8 +298,8 @@ class Miappe_validator:
             self.logs.append("CHECK FAILED - The Study sheet cannot be opened.")
             self.run = False
 
+    # Deprecated
     #  -  Check Person Sheet  -
-
     def CheckPersonSheet(self):
         self.logs.append(datetime.now() - startTime)
         # Check Person Sheet Header
@@ -377,8 +376,8 @@ class Miappe_validator:
             self.logs.append("CHECK FAILED - The Person sheet cannot be opened.")
             self.run = False
 
+    # Deprecated
     #  -  Check Data File Sheet  -
-
     def CheckDatafileSheet(self):
         # Check Data File Sheet Header (In MIAPPE specs it is named Data File)
         try:
@@ -419,8 +418,8 @@ class Miappe_validator:
             self.logs.append("CHECK FAILED - The Data file sheet cannot be opened.")
             self.run = False
 
+    # Deprecated
     #  -  Check Biological Material Sheet  -
-
     def CheckBiologicalMaterialSheet(self):
         # Check Biological Material Sheet Header
         try:
@@ -478,12 +477,8 @@ class Miappe_validator:
             self.logs.append("CHECK FAILED - The Biological Material sheet cannot be opened.")
             self.run = False
 
-
-
-
-
+    # Deprecated
     #  -  Check Event Sheet  -
-
     def CheckEventSheet(self):
         # Check Event Sheet Header
         try:
@@ -539,8 +534,8 @@ class Miappe_validator:
             self.run = False
 
     # The input file should end in .xlsx, .xls or .ods
-    # Additional excel-like files which may be considered (older versions): .xlsm; .xlsb; .xml; .xltx; .xlt; .xltm; .xlam; .xlc; xld; .xlk; .xlw; .xlr.
-
+    # Additional excel-like files which may be considered (older versions): .xlsm; .xlsb; .xml;
+    # .xltx; .xlt; .xltm; .xlam; .xlc; xld; .xlk; .xlw; .xlr.
     def run_miappe_validator(self):
 
         if self.run == True:
