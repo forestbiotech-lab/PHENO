@@ -26,7 +26,7 @@ sudo chmod 644 /home/${USERNAME}/.ssh/authorized_keys
 
 #Docker 
 sudo apt update 
-sudo apt install build-essential 
+sudo apt install -y build-essential 
 # Add Docker's official GPG key:
 sudo apt-get install ca-certificates curl
 sudo install -m 0755 -d /etc/apt/keyrings
