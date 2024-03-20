@@ -19,7 +19,6 @@ git checkout main
 cd ../ontobrapi-brapi
 git checkout master
 cd ..
-git submodule update
 git submodule sync
 
 sed -ri "s:3001\:80:80\:80:g" docker-compose.yml
