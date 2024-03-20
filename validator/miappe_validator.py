@@ -56,7 +56,7 @@ class Miappe_validator:
                     " valid input sheets, which is less than the minimum 11 valid sheets required: Investigation, Study, Person, Data file, Biological Material, Sample, Observation Unit, Environment, Factor/Exp. Factor, Observed Variable, Event")
             self.logs.append(
                 f"CHECK FAILED - The input file has {len(self.invalid_sheets)} " +
-                     f"invalid input worksheets. Correct <<{'>>, <<'.join(self.invalid_sheets)}>>")
+                     f"invalid input worksheets. Correct the worksheet &lt;&lt;{'&gt;&gt;, &lt;&lt;'.join(self.invalid_sheets)}&gt;&gt;")
 
             self.run = False
         else:
