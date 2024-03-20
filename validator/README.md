@@ -16,3 +16,7 @@ To test the server with the following file:
 ```
 The python webserver has the uplod/uploaded_files directory mounted as external so you can refere to any file in the uploaded_files for testing purposes.
  
+
+## Open documents format dependencies
+
+The [ODFPy](https://pypi.org/project/odfpy/) driver initially used to read *.ods* files is extremly slow. As an alternative the [pyexcel-ods3](https://github.com/pyexcel/pyexcel-ods3) driver as be adapted, to use in case the uploaded data is a *.ods* file. However, this isn't implementing the dataformat validation on these files. As an alternative which uses partial loading of *.ods*, the driver [pyexcel-odsr](https://github.com/pyexcel/pyexcel-odsr) can be use in future iterations. 
