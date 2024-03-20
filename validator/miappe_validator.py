@@ -97,25 +97,26 @@ class Miappe_validator:
             return [ele.replace('*', '') for ele in list(self.sheet_df)]
 
     def validate_headers(self, header, sheet_name):
-        if (header == self.valid_structure[sheet_name]['valid_header1'] or
-                header == self.valid_structure[sheet_name]['valid_header2']):
-            self.logs.append(f'CHECK PASSED - The {sheet_name} sheet has a valid header (column name/number).')
-            self.validate_data(sheet_name)
-
-        elif header == self.valid_structure[sheet_name]['valid_header3'] and sheet_name == "Person":
-            ###### Person specific??????
-            # Delete first column and then first three rows of the person dataframe
-            self.sheet_df.drop(["Definition", "Example", "Format"], axis=0, inplace=True)
-            self.sheet_df.drop("Field", axis=1, inplace=True)
-
-        elif "valid_header3" in self.valid_structure[sheet_name]:
-            if header == self.valid_structure[sheet_name]['valid_header3']:
-                # Is used in Study for vitis exception which will be removed.
+        if "valid_header1" in self.valid_structure[sheet_name] and "valid_header2" in self.valid_structure[sheet_name]:
+            if (header == self.valid_structure[sheet_name]['valid_header1'] or
+                    header == self.valid_structure[sheet_name]['valid_header2']):
                 self.logs.append(f'CHECK PASSED - The {sheet_name} sheet has a valid header (column name/number).')
                 self.validate_data(sheet_name)
-        else:
-            self.logs.append(f"CHECK FAILED - The {sheet_name} sheet has an invalid header (column name/number).")
-            self.run = False
+
+            elif header == self.valid_structure[sheet_name]['valid_header3'] and sheet_name == "Person":
+                ###### Person specific??????
+                # Delete first column and then first three rows of the person dataframe
+                self.sheet_df.drop(["Definition", "Example", "Format"], axis=0, inplace=True)
+                self.sheet_df.drop("Field", axis=1, inplace=True)
+
+            elif "valid_header3" in self.valid_structure[sheet_name]:
+                if header == self.valid_structure[sheet_name]['valid_header3']:
+                    # Is used in Study for vitis exception which will be removed.
+                    self.logs.append(f'CHECK PASSED - The {sheet_name} sheet has a valid header (column name/number).')
+                    self.validate_data(sheet_name)
+            else:
+                self.logs.append(f"CHECK FAILED - The {sheet_name} sheet has an invalid header (column name/number).")
+                self.run = False
 
     def validate_data(self, sheet_name):
         if 'can_be_empty' in self.valid_structure[sheet_name]:
