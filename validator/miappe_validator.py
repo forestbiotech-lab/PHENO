@@ -10,14 +10,14 @@ from datetime import datetime
 
 startTime = datetime.now()
 
+
 #   ---   Define a Miappe_validator Class   ---
-
 class Miappe_validator:
-
     #   ---   Initiate class properties and check Input File extension  ---
     def __init__(self, input_file):
         self.sheet_df = None
         self.valid_sheets = None
+        self.invalid_sheets = None
         self.valid_structure = json.load(open("validationstructure.json"))
         self.logs = ["  --- OntoBrAPI - Input File Validity Report ---  "]
         self.run = True
@@ -49,15 +49,20 @@ class Miappe_validator:
         valid_sheet_names = list(self.valid_structure.keys())
         # Check the number of input sheet names that are valid or not
         self.valid_sheets = [sheet for sheet in self.sheetsList if sheet in valid_sheet_names]
-        if len(self.valid_sheets) < 11:
+        if len(self.valid_sheets) < len(valid_sheet_names[:-1]):
+            self.invalid_sheets = [sheet for sheet in self.sheetsList if sheet not in valid_sheet_names ]
             self.logs.append(
                     "CHECK FAILED - The input file has " + str(len(self.valid_sheets)) + 
                     " valid input sheets, which is less than the minimum 11 valid sheets required: Investigation, Study, Person, Data file, Biological Material, Sample, Observation Unit, Environment, Factor/Exp. Factor, Observed Variable, Event")
+            self.logs.append(
+                f"CHECK FAILED - The input file has {len(self.invalid_sheets)} " +
+                     f"invalid input worksheets. Correct <<{'>>, <<'.join(self.invalid_sheets)}>>")
+
             self.run = False
         else:
-            if len(self.sheetsList) == 11:
+            if len(self.sheetsList) >= len(valid_sheet_names[:-1]):
                 self.logs.append(
-                    "CHECK PASSED - The input file has the minimum required 11 valid sheet names.")
+                    f"CHECK PASSED - The input file has the minimum required {len(valid_sheet_names[:-1])} valid sheet names.")
             else:
                 self.logs.append(
                     "CHECK WARNING - The input file has " + str(len(self.sheetsList)) + 
@@ -544,9 +549,9 @@ class Miappe_validator:
             self.CheckInvestigationSheet()
             # self.check_sheet('Investigation')
 
-        # Skip Investigation
+        # Skip Investigation and Data Value
         if self.run:
-            for sheet in list(self.sheetsList)[1:]:
+            for sheet in list(self.sheetsList)[1:-1]:
                 if self.run and sheet in self.valid_structure:
                     self.check_sheet(sheet)
 
