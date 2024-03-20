@@ -13,12 +13,12 @@ git submodule set-url ontobrapi-brapi  https://github.com/forestbiotech-lab/onto
 git submodule update
 cd ontoBrAPI-node-docker
 git checkout master
+git pull origin master
 cd ../ontobrapi-admin
 git checkout main
 cd ../ontobrapi-brapi
 git checkout master
 cd ..
-git submodule update
 git submodule sync
 
 sed -ri "s:3001\:80:80\:80:g" docker-compose.yml

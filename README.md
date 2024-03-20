@@ -135,3 +135,5 @@ brapi     |   ?M |
 
 
 Runs on **t3.micro** instance of AWS. (2vcpu, 1GbRAM, 16Gb HDD)
+But optimum is **t3.small** instance from AWS (2vCPU, 2GbRAM, 16Gb HDD)
+
