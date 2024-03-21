@@ -1,7 +1,7 @@
 # Script to read and validate input MIAPPE Compliant Excel file.
 
 # Read required packages
-from pyexcel_ods3 import get_data
+from pyexcel_ods3 import get_datas
 import pandas as pd
 import json
 import sys
@@ -89,13 +89,11 @@ class Miappe_validator:
         if self.filetype == "od":
             self.sheet_df = self.complete_excel[sheet_name].drop(0)
             self.sheet_df = self.sheet_df.reset_index(drop=True)
-            self.logs.append(list(self.complete_excel.keys())[0])
-            return [ele.replace('*', '') for ele in list(self.sheet_df)]
         else:
             self.sheet_df = pd.read_excel(self.complete_excel, self.name_of_similar_sheet(sheet_name))
-            self.logs.append(self.sheet_df.columns[0])
             # Remove '*' characters, which indicate mandatory columns to fill
-            return [ele.replace('*', '') for ele in list(self.sheet_df)]
+        
+        return [ele.replace('*', '') for ele in list(self.sheet_df)]
 
     # Checks if headers are valid
     def validate_headers(self, header, sheet_name):
@@ -152,10 +150,10 @@ class Miappe_validator:
             # Format 4 - Vitis file
             if str(list(sheet_format)) in self.valid_structure[sheet_name]['valid_formats']:
                 self.logs.append(
-                    f"CHECK PASSED - The {sheet_name} sheet has a valid format (properly formatted fields).")
+                    f"CHECK PASSED - The {sheet_name} sheet has a valid format (properly formatted fields). Not checked.")
             else:
                 self.logs.append(
-                    f"CHECK WARNING - The {sheet_name} sheet has invalid formats (some fields are incorrectly formatted).")
+                    f"CHECK WARNING - The {sheet_name} sheet has invalid formats (some fields are incorrectly formatted). Not checked.")
                 self.run = True
 
     def check_sheet(self, sheet_name):
@@ -201,7 +199,6 @@ class Miappe_validator:
                 #self.logs.append(investigation_format)
                 
                 # Checks if mandatory columns have values (at least in the first position)
-
                 if pd.isna(self.sheet_df.iloc[0, 0]) == True:
                     self.logs.append("CHECK FAILED - The Investigation ID* (Investigation sheet) is required.")
                     self.run = False
@@ -215,7 +212,7 @@ class Miappe_validator:
                     self.logs.append("CHECK FAILED - The MIAPPE version* (Investigation sheet) is required.")
                     self.run = False
 
-            # This means that the Excel is the template from MIAPPE Github (or modified to keep only two first columns)
+            # This means that the Excel is the template from MIAPPE Github (or modified by user to keep only two first columns)
             elif investigation_header == valid_investigation_header2 or investigation_header == valid_investigation_header3:
                 # Check if Rows are well named
                 if self.sheet_df.iloc[1:, 0] == valid_investigation_header1:
