@@ -25,13 +25,13 @@ class Miappe_validator:
         self.input_file = input_file
         try:
             if self.input_file.lower().endswith(('.xlsx', '.xls')):
-                self.logs.append("CHECK PASSED - Valid input file extension xlsx") #take out xlsx
+                self.logs.append("CHECK PASSED - Valid input file extension")
                 # microsoft
                 self.filetype = "ms"
                 self.complete_excel = pd.ExcelFile(input_file)
                 self.sheetsList = self.complete_excel.sheet_names
             elif self.input_file.lower().endswith(('.ods')):
-                self.logs.append("CHECK PASSED - Valid input file extension ods") #take out ods
+                self.logs.append("CHECK PASSED - Valid input file extension")
                 # open docs
                 self.filetype = "od"
                 ods = get_data(input_file)
@@ -50,8 +50,6 @@ class Miappe_validator:
         valid_sheet_names = list(self.valid_structure.keys())
         # Check the number of input sheet names that are valid or not
         self.valid_sheets = [sheet for sheet in self.sheetsList if sheet in valid_sheet_names]
-        self.logs.append(self.valid_sheets)
-        self.logs.append(valid_sheet_names[:-1])
         if len(self.valid_sheets) < (len(valid_sheet_names[:-1]) -1 ) and ("Exp. Factor" in self.valid_sheets and "Factor" in self.valid_sheets): # It's [:1] to ignore Data value, and -1 because Factor/Exp. Factor redundancy
             self.invalid_sheets = [sheet for sheet in self.sheetsList if sheet not in valid_sheet_names ]
             self.logs.append(
@@ -65,7 +63,7 @@ class Miappe_validator:
         else:
             if len(self.sheetsList) >= (len(valid_sheet_names[:-1]) -1 ):
                 self.logs.append(
-                    f"CHECK PASSED - The input file has the minimum required {len(valid_sheet_names[:-1])} valid sheet names.")
+                    f"CHECK PASSED - The input file has the minimum required {(len(valid_sheet_names[:-1]) -1 )} valid sheet names.")
             else:
                 self.logs.append(
                     "CHECK WARNING - The input file has " + str(len(self.sheetsList)) + 
@@ -100,7 +98,7 @@ class Miappe_validator:
             return [ele.replace('*', '') for ele in list(self.sheet_df)]
 
     def validate_headers(self, header, sheet_name):
-        if "valid_header1" in self.valid_structure[sheet_name] and "valid_header2" in self.valid_structure[sheet_name]:
+        if "valid_header1" in self.valid_structure[sheet_name] or "valid_header2" in self.valid_structure[sheet_name]:
             if (header == self.valid_structure[sheet_name]['valid_header1'] or
                     header == self.valid_structure[sheet_name]['valid_header2']):
                 self.logs.append(f'CHECK PASSED - The {sheet_name} sheet has a valid header (column name/number).')
@@ -170,7 +168,7 @@ class Miappe_validator:
 
     #  -  Check Investigation Sheet  -
     def CheckInvestigationSheet(self):
-        self.logs.append("investigation" + str(datetime.now() - startTime))
+        # self.logs.append("investigation" + str(datetime.now() - startTime))
         # Check Investigation Sheet Header
         try:
             sheet_name = "Investigation"
