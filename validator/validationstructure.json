@@ -102,13 +102,13 @@
   }, 
   "Exp. Factor":{
     "valid_header1" : [
-      "Investigation unique ID", "Investigation title", "Investigation description","Submission date", "Public release date", "License", "MIAPPE version","Associated publication"
+      "Field", "Study unique ID", "Experimental Factor type","Experimental Factor description", "Experimental Factor values"
     ],
     "valid_header2" : [
-      "Field", "Value", "Definition", "Example", "Format"
+      "Study unique ID", "Experimental Factor type","Experimental Factor description", "Experimental Factor values"
     ],
     "valid_header3" : [
-      "Field", "Value"
+      "Field", "Value", "Definition", "Example", "Format"
     ]
   }, 
   "Observed Variable":{

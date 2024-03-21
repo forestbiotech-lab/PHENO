@@ -52,7 +52,7 @@ class Miappe_validator:
         self.valid_sheets = [sheet for sheet in self.sheetsList if sheet in valid_sheet_names]
         self.logs.append(self.valid_sheets)
         self.logs.append(valid_sheet_names[:-1])
-        if len(self.valid_sheets) < len(valid_sheet_names[:-1]): # why the [:-1]
+        if len(self.valid_sheets) < (len(valid_sheet_names[:-1]) -1 ) and ("Exp. Factor" in self.valid_sheets and "Factor" in self.valid_sheets): # It's [:1] to ignore Data value, and -1 because Factor/Exp. Factor redundancy
             self.invalid_sheets = [sheet for sheet in self.sheetsList if sheet not in valid_sheet_names ]
             self.logs.append(
                     "CHECK FAILED - The input file has " + str(len(self.valid_sheets)) + 
@@ -63,7 +63,7 @@ class Miappe_validator:
 
             self.run = False
         else:
-            if len(self.sheetsList) >= len(valid_sheet_names[:-1]):
+            if len(self.sheetsList) >= (len(valid_sheet_names[:-1]) -1 ):
                 self.logs.append(
                     f"CHECK PASSED - The input file has the minimum required {len(valid_sheet_names[:-1])} valid sheet names.")
             else:
