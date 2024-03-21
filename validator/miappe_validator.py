@@ -31,6 +31,7 @@ class Miappe_validator:
                 self.complete_excel = pd.ExcelFile(input_file)
                 self.sheetsList = self.complete_excel.sheet_names
             elif self.input_file.lower().endswith(('.ods')):
+                self.logs.append("CHECK PASSED - Valid input file extension")
                 # open docs
                 self.filetype = "od"
                 ods = get_data(input_file)
@@ -47,6 +48,7 @@ class Miappe_validator:
     def check_input_file(self):
         # These are all valid sheet names for a MIAPPE compliant excel file
         valid_sheet_names = list(self.valid_structure.keys())
+        self.logs.append(valid_sheet_names)
         # Check the number of input sheet names that are valid or not
         self.valid_sheets = [sheet for sheet in self.sheetsList if sheet in valid_sheet_names]
         if len(self.valid_sheets) < len(valid_sheet_names[:-1]):
