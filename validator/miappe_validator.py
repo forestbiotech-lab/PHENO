@@ -119,7 +119,7 @@ class Miappe_validator:
                         self.run = False
                 elif sheet_name == "Investigation":
                     # Checks that are not none from first column
-                    if( self.sheet_df.iloc[:,0][self.sheet_df.iloc[:,0].notna()] == self.valid_structur["Investigation"]['valid_header1'] ):
+                    if( self.sheet_df.iloc[:,0][self.sheet_df.iloc[:,0].notna()] == self.valid_structure["Investigation"]['valid_header1'] ):
                         self.logs("Investigation is transposed")
                 elif header == self.valid_structure[sheet_name]['valid_header3']:
                     self.logs.append(f'CHECK PASSED - The {sheet_name} sheet has a valid header (column name/number).')
@@ -136,19 +136,24 @@ class Miappe_validator:
     def validate_data(self, sheet_name):
         if 'can_be_empty' in self.valid_structure[sheet_name]:
             if not self.valid_structure[sheet_name]['can_be_empty']:
-                if len(self.sheet_df.index) != 0:
-                    for mandatory_column in self.valid_structure[sheet_name]['mandatory_columns']:
-                        # It needs to exist, if not the header would had given error previously
-                        if mandatory_column in self.sheet_df:
-                            if pd.isna(self.sheet_df[mandatory_column][0]):
-                                self.logs.append(
-                                    f"CHECK FAILED - The {mandatory_column} column ({sheet_name} sheet) is mandatory.")
-                                self.run = False
-                        elif mandatory_column + "*" in self.sheet_df:
-                            if pd.isna(self.sheet_df[mandatory_column + "*"][0]):
-                                self.logs.append(
-                                    f"CHECK FAILED - The {mandatory_column} column ({sheet_name} sheet) is mandatory.")
-                                self.run = False
+                if len(self.sheet_df.index) >= 0:
+                    for idx, row in self.sheet_df.iterrows():
+                        ## Returns all value that are not none not null an not empty
+                        if len(self.sheet_df.iloc[idx, :][self.sheet_df.iloc[idx, :].notna()][[not blank for blank in list(self.sheet_df.iloc[idx, :][self.sheet_df.iloc[idx, :].notna()].eq(""))]]) > 0:
+                            for mandatory_column in self.valid_structure[sheet_name]['mandatory_columns']:
+                                # It needs to exist, if not the header would had given error previously
+                                if mandatory_column in self.sheet_df:
+                                    if (pd.isna(self.sheet_df[mandatory_column][idx]) or
+                                            self.sheet_df[mandatory_column][idx] == ""):
+                                        self.logs.append(
+                                            f"CHECK FAILED - The {mandatory_column} column ({sheet_name} sheet) is mandatory.")
+                                        self.run = False
+                                elif mandatory_column + "*" in self.sheet_df:
+                                    if (pd.isna(self.sheet_df[mandatory_column + "*"][idx]) or
+                                            self.sheet_df[mandatory_column + "*"][idx] == ""):
+                                        self.logs.append(
+                                            f"CHECK FAILED - The {mandatory_column} column ({sheet_name} sheet) is mandatory.")
+                                        self.run = False
                 else:
                     self.logs.append(f"CHECK FAILED - The {sheet_name} Sheet is empty.")
                     self.run = False
