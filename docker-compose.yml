@@ -61,8 +61,6 @@ services:
        - "3004:8080"
      volumes:
        - ./uploads/uploadedfiles:/usr/src/app/external   
-     depends_on:
-       - web
      networks:
        - backend
 
