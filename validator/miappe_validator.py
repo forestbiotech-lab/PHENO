@@ -152,7 +152,7 @@ class Miappe_validator:
                             if row[mandatory_columns].isna().any():
                                 mandatory_column+= list(row[mandatory_columns][row[mandatory_columns].isna()].index)
                             self.logs.append(
-                                            f"CHECK FAILED - The *{'* '.join(mandatory_column)}* column ({sheet_name} sheet) is mandatory.")
+                                            f"CHECK FAILED - The *{'* *'.join(mandatory_column)}* column ({sheet_name} sheet) is mandatory in line {idx+1}.")
                             self.run = False
                 else:
                     self.logs.append(f"CHECK FAILED - The {sheet_name} Sheet is empty.")
