@@ -86,14 +86,18 @@ class Miappe_validator:
                 return sheet_name
 
     def load_worksheet(self, sheet_name):
+        # Solved by not adding the first row
         if self.filetype == "od":
             self.sheet_df = self.complete_excel[sheet_name].drop(0)
             self.sheet_df = self.sheet_df.reset_index(drop=True)
         else:
             self.sheet_df = pd.read_excel(self.complete_excel, self.name_of_similar_sheet(sheet_name))
             # Remove '*' characters, which indicate mandatory columns to fill
-        
-        return [ele.replace('*', '') for ele in list(self.sheet_df)]
+        header = [ele.replace('*', '') for ele in list(self.sheet_df)]
+        headerMap = {ele: ele.replace('*', '') for ele in list(self.sheet_df)}
+        # Removes asterisks from columns of data frame
+        self.sheet_df = self.sheet_df.rename(columns=headerMap)
+        return header
 
     # Checks if headers are valid
     def validate_headers(self, header, sheet_name):
@@ -136,24 +140,20 @@ class Miappe_validator:
     def validate_data(self, sheet_name):
         if 'can_be_empty' in self.valid_structure[sheet_name]:
             if not self.valid_structure[sheet_name]['can_be_empty']:
-                if len(self.sheet_df.index) >= 0:
+                if len(self.sheet_df.index) >= 0 and "mandatory_columns" in self.valid_structure[sheet_name]:
+                    #self.sheet_df.columns =
                     for idx, row in self.sheet_df.iterrows():
-                        ## Returns all value that are not none not null an not empty
-                        if len(self.sheet_df.iloc[idx, :][self.sheet_df.iloc[idx, :].notna()][[not blank for blank in list(self.sheet_df.iloc[idx, :][self.sheet_df.iloc[idx, :].notna()].eq(""))]]) > 0:
-                            for mandatory_column in self.valid_structure[sheet_name]['mandatory_columns']:
-                                # It needs to exist, if not the header would had given error previously
-                                if mandatory_column in self.sheet_df:
-                                    if (pd.isna(self.sheet_df[mandatory_column][idx]) or
-                                            self.sheet_df[mandatory_column][idx] == ""):
-                                        self.logs.append(
-                                            f"CHECK FAILED - The {mandatory_column} column ({sheet_name} sheet) is mandatory.")
-                                        self.run = False
-                                elif mandatory_column + "*" in self.sheet_df:
-                                    if (pd.isna(self.sheet_df[mandatory_column + "*"][idx]) or
-                                            self.sheet_df[mandatory_column + "*"][idx] == ""):
-                                        self.logs.append(
-                                            f"CHECK FAILED - The {mandatory_column} column ({sheet_name} sheet) is mandatory.")
-                                        self.run = False
+                        mandatory_columns = self.valid_structure[sheet_name]["mandatory_columns"]
+                        if ((row[mandatory_columns].isna().any() or row[mandatory_columns].eq("").any()) and
+                                (not row[mandatory_columns].isna().all())):
+                            mandatory_column = []
+                            if row[mandatory_columns].eq("").any():
+                                mandatory_column+= list(row[mandatory_columns][row[mandatory_columns].eq("")].index)
+                            if row[mandatory_columns].isna().any():
+                                mandatory_column+= list(row[mandatory_columns][row[mandatory_columns].isna()].index)
+                            self.logs.append(
+                                            f"CHECK FAILED - The *{'* '.join(mandatory_column)}* column ({sheet_name} sheet) is mandatory.")
+                            self.run = False
                 else:
                     self.logs.append(f"CHECK FAILED - The {sheet_name} Sheet is empty.")
                     self.run = False
