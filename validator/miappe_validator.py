@@ -108,6 +108,18 @@ class Miappe_validator:
                 # Delete first column and then first three rows of the person dataframe
                 self.sheet_df.drop(["Definition", "Example", "Format"], axis=0, inplace=True)
                 self.sheet_df.drop("Field", axis=1, inplace=True)
+                if header == self.valid_structure[sheet_name]['valid_header3']:
+                    # Is used in Study for vitis exception which will be removed.
+                    self.logs.append(f'CHECK PASSED - The {sheet_name} sheet has a valid header (column name/number).')
+                    self.validate_data(sheet_name)
+                else:
+                    self.logs.append(
+                        f"CHECK FAILED - The {sheet_name} sheet has an invalid header (column name/number).")
+                    self.run = False
+            elif sheet_name == "Investigation":
+                # Checks that are not none from first column
+                if( self.sheet_df.iloc[:,0][self.sheet_df.iloc[:,0].notna()] == self.valid_structur["Investigation"]['valid_header1'] ):
+                    self.logs("Investigation is transposed")
 
             elif "valid_header3" in self.valid_structure[sheet_name]:
                 if header == self.valid_structure[sheet_name]['valid_header3']:
