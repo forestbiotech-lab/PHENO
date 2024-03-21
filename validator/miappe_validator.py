@@ -1,7 +1,7 @@
 # Script to read and validate input MIAPPE Compliant Excel file.
 
 # Read required packages
-from pyexcel_ods3 import get_datas
+from pyexcel_ods3 import get_data
 import pandas as pd
 import json
 import sys
