@@ -51,7 +51,7 @@
     "valid_header3" : ["Field", "Study unique ID", "Person name*", "Person email", "Person ID", "Person role*",
                                     "Person affiliation*"],
     "can_be_empty" : false,
-    "mandatory_columns": ["Study unique ID","Person name","Person role", "The Person affiliation"]
+    "mandatory_columns": ["Study unique ID","Person name","Person role", "Person affiliation"]
   }, 
   "Data file":{
     "valid_header1" : ["Data file link", "Data file description", "Data file version"],
