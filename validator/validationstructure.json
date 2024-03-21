@@ -10,9 +10,7 @@
       "Field", "Value"
     ],
     "can_be_empty":false,
-    "mandatory_columns":[
-      "Investigation unique ID","Investigation title","Investigation description","MIAPPE version"
-    ]
+    "mandatory_columns":["Investigation unique ID","Investigation title","Investigation description","MIAPPE version"]
   }, 
   "Study":{
     "valid_header1" : ["Study unique ID", "Study title", "Study description", "Start date of study",
@@ -38,7 +36,13 @@
                                "Description of statistical design", "Type of statistical design",
                                "Observation unit level hierarchy", "Observation unit description",
                                "Description of growth facility", "Type of growth facility", "Cultural practices",
-                               "Map of experimental design"]
+                               "Map of experimental design"],
+    "can_be_empty":false,
+    "mandatory_columns":[
+    "Investigation unique ID","Study unique ID","Study title", "Start date of study", "Contact institution", 
+    "Geographic location (country)", "Experimental site name", "Description of statistical design",
+    "Observation unit description", "Description of growth facility"
+    ]
   }, 
   "Person":{
     "valid_header1" : ["Person name", "Person email", "Person ID", "Person role", "Person affiliation"],
@@ -53,7 +57,9 @@
     "valid_header1" : ["Data file link", "Data file description", "Data file version"],
     "valid_header2" : ["Study unique ID", "Data file link", "Data file description", "Data file version"],
     "valid_formats" : ["[dtype('O'), dtype('O'), dtype('O'), dtype('O')]",
-                                      "[dtype('O'), dtype('O'), dtype('O'), dtype('float64')]"]
+                                      "[dtype('O'), dtype('O'), dtype('O'), dtype('float64')]"],
+    "can_be_empty":false,
+    "mandatory_columns":["Study unique ID","Data file link","Data file description", "Data file version"]
   }, 
   "Biological Material":{
     "valid_header1" : ["Biological material ID", "Organism", "Genus", "Species", "Infraspecific name",
@@ -77,28 +83,38 @@
       "[dtype('O'), dtype('O'), dtype('O'), dtype('float64'), dtype('float64'), dtype('float64'), dtype('float64'), dtype('float64'), dtype('float64'), dtype('float64'), dtype('float64'), dtype('float64'), dtype('float64'), dtype('float64'), dtype('float64'), dtype('float64'), dtype('float64')]",
       "[dtype('O'), dtype('O'), dtype('O'), dtype('O'), dtype('O'), dtype('float64'), dtype('float64'), dtype('O'), dtype('float64'), dtype('float64'), dtype('O'), dtype('O'), dtype('float64'), dtype('float64'), dtype('float64'), dtype('float64'), dtype('O')]",
       "[dtype('O'), dtype('O'), dtype('O'), dtype('O'), dtype('O'), dtype('float64'), dtype('float64'), dtype('O'), dtype('float64'), dtype('float64'), dtype('O'), dtype('float64'), dtype('float64'), dtype('float64'), dtype('float64'), dtype('float64'), dtype('O')]",
-      "[dtype('O'), dtype('O'), dtype('O'), dtype('O'), dtype('O'), dtype('float64'), dtype('float64'), dtype('float64'), dtype('O'), dtype('O'), dtype('float64'), dtype('float64'), dtype('float64'), dtype('float64'), dtype('float64'), dtype('float64'), dtype('float64')]"]
+      "[dtype('O'), dtype('O'), dtype('O'), dtype('O'), dtype('O'), dtype('float64'), dtype('float64'), dtype('float64'), dtype('O'), dtype('O'), dtype('float64'), dtype('float64'), dtype('float64'), dtype('float64'), dtype('float64'), dtype('float64'), dtype('float64')]"],
+    "can_be_empty":false,
+    "mandatory_columns":["Study unique ID","Biological material ID","Organism"]
   }, 
   "Sample":{
     "valid_header1" : ["Sample ID", "Plant structure development stage", "Plant anatomical entity",
                                     "Sample description", "Collection date", "External ID"],
     "valid_header2" : ["Observation unit ID", "Sample ID", "Plant structure development stage",
-                                    "Plant anatomical entity", "Sample description", "Collection date", "External ID"]
+                                    "Plant anatomical entity", "Sample description", "Collection date", "External ID"],
+    "can_be_empty":false,
+    "mandatory_columns":["Observation unit ID","Sample ID","Plant anatomical entity", "Collection date"]
   },
   "Observation Unit":{
     "valid_header1" : ["Observation unit ID", "Observation unit type", "External ID", "Spatial distribution",
                                     "Observation Unit factor value"],
     "valid_header2" : ["Study unique ID", "Biological Material ID", "Observation unit ID",
                                     "Observation unit type", "External ID", "Spatial distribution",
-                                    "Observation unit factor value"]
+                                    "Observation unit factor value"],
+    "can_be_empty":false,
+    "mandatory_columns":["Study unique ID","Biological Material ID","Observation unit ID", "Observation unit type"]
   }, 
   "Environment":{
     "valid_header1" : ["Environment parameter", "Environment parameter value"],
-    "valid_header2" : ["Study unique ID", "Environment parameter", "Environment parameter value"]
+    "valid_header2" : ["Study unique ID", "Environment parameter", "Environment parameter value"],
+    "can_be_empty":true,
+    "mandatory_columns":["Study unique ID","Environment parameter","Environment parameter value"]
   }, 
   "Factor":{
     "valid_header1" : ["Experimental parameter", "Experimental parameter value"],
-    "valid_header2" : ["Study unique ID", "Factor type", "Factor description", "Factor values"]
+    "valid_header2" : ["Study unique ID", "Factor type", "Factor description", "Factor values"],
+    "can_be_empty":true,
+    "mandatory_columns":["Study unique ID","Factor type","Factor values"]
   }, 
   "Exp. Factor":{
     "valid_header1" : [
@@ -109,7 +125,9 @@
     ],
     "valid_header3" : [
       "Field", "Value", "Definition", "Example", "Format"
-    ]
+    ],
+    "can_be_empty":true,
+    "mandatory_columns":["Study unique ID","Factor type","Factor values"]
   }, 
   "Observed Variable":{
     "valid_header1" : ["Variable ID", "Variable name", "Variable accession number", "Trait",
@@ -118,7 +136,9 @@
     "valid_header2" : ["Study unique ID", "Variable ID", "Variable name", "Variable accession number",
                                         "Trait", "Trait accession number", "Method", "Method accession number",
                                         "Method description", "Reference associated to the method", "Scale",
-                                        "Scale accession number", "Time scale"]
+                                        "Scale accession number", "Time scale"],
+    "can_be_empty":false,
+    "mandatory_columns":["Study unique ID","Variable ID","Trait","Method","Scale"]
   }, 
   "Event":{
     "valid_header1" : ["Event type", "Event accession number", "Event description", "Event date"],
@@ -129,7 +149,9 @@
                                        "[dtype('O'), dtype('O'), dtype('O'), dtype('float64'), dtype('O'), dtype('O')]",
                                        "[dtype('O'), dtype('O'), dtype('O'), dtype('float64'), dtype('O'), dtype('<M8[ns]')]",
                                        "[dtype('O'), dtype('O'), dtype('O'), dtype('O'), dtype('O'), dtype('<M8[ns]')]",
-                                       "[dtype('O'), dtype('O'), dtype('O'), dtype('O'), dtype('O'), dtype('O')]"]
+                                       "[dtype('O'), dtype('O'), dtype('O'), dtype('O'), dtype('O'), dtype('O')]"],
+    "can_be_empty":true,
+    "mandatory_columns":["Study unique ID","Event type","Event date"]
   },
   "Data Value": {
 
