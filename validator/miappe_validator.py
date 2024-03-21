@@ -51,7 +51,8 @@ class Miappe_validator:
         # Check the number of input sheet names that are valid or not
         self.valid_sheets = [sheet for sheet in self.sheetsList if sheet in valid_sheet_names]
         self.logs.append(self.valid_sheets)
-        if len(self.valid_sheets) < len(valid_sheet_names[:-1]):
+        self.logs.append(valid_sheet_names[:-1])
+        if len(self.valid_sheets) < len(valid_sheet_names[:-1]): # why the [:-1]
             self.invalid_sheets = [sheet for sheet in self.sheetsList if sheet not in valid_sheet_names ]
             self.logs.append(
                     "CHECK FAILED - The input file has " + str(len(self.valid_sheets)) + 
@@ -168,7 +169,6 @@ class Miappe_validator:
             self.run = False
 
     #  -  Check Investigation Sheet  -
-    # REDO SECTION TO ALLOW MIAPPE TEMPLATE (TRANSPOSED VERSION)
     def CheckInvestigationSheet(self):
         self.logs.append("investigation" + str(datetime.now() - startTime))
         # Check Investigation Sheet Header
