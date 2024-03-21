@@ -25,13 +25,13 @@ class Miappe_validator:
         self.input_file = input_file
         try:
             if self.input_file.lower().endswith(('.xlsx', '.xls')):
-                self.logs.append("CHECK PASSED - Valid input file extension")
+                self.logs.append("CHECK PASSED - Valid input file extension xlsx")
                 # microsoft
                 self.filetype = "ms"
                 self.complete_excel = pd.ExcelFile(input_file)
                 self.sheetsList = self.complete_excel.sheet_names
             elif self.input_file.lower().endswith(('.ods')):
-                self.logs.append("CHECK PASSED - Valid input file extension")
+                self.logs.append("CHECK PASSED - Valid input file extension ods")
                 # open docs
                 self.filetype = "od"
                 ods = get_data(input_file)
