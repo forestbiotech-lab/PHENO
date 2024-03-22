@@ -166,11 +166,11 @@ class Miappe_validator:
                 self.sheet_df = self.sheet_df.dropna(axis='index', how='all')
                 # Checks for Study sheet
                 if sheet_name == "Study":
-                    self.logs.append("Its Studying Time")
+                    self.logs.append("Its Studying Big Time")
                     # Are Study IDs unique?
-                    # Cant use this, because on vitis, first column in Study sheet is Investigation unique ID and not Study unique ID
+                    # Not working for vitis atm (first column in Study sheet is 'Investigation unique ID' and not ´'Study unique ID')
                     # if len(self.sheet_df.iloc[:, 0].unique()) != len(self.sheet_df.iloc[:, 0]):
-                    if len(self.sheet_df['Study unique ID'].unique()) != len(self.sheet_df['Study unique ID']):
+                    if len(self.sheet_df['Study unique ID*'].unique()) != len(self.sheet_df['Study unique ID*']):
                         self.logs.append(f"CHECK FAILED - The {sheet_name} sheet, Study unique ID column, identifiers must be unique.")
                         self.run = False
                     # Are date formats OK?
