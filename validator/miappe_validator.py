@@ -168,8 +168,8 @@ class Miappe_validator:
                 if sheet_name == "Study":
                     self.logs.append("Its Studying Time")
                     # Are Study IDs unique?
-                    self.logs.append(len(self.sheet_df[0,:].unique()))
-                    self.logs.append(len(len(self.sheet_df[0,:])))
+                    self.logs.append(len(self.sheet_df.iloc[:, 0].unique()))
+                    self.logs.append(len(self.sheet_df.iloc[:, 0]))
                     # if len(self.sheet_df[0,:].unique()) != len(self.sheet_df[0,:]):
                         # self.logs.append(f"CHECK FAILED - The {sheet_name} sheet, Study unique ID column, identifiers must be unique.")
                         # self.run = False
