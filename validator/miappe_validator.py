@@ -164,6 +164,7 @@ class Miappe_validator:
         nrow = 0
         for date in date_list:
             nrow += 1
+            self.logs.append(date)
             correct_date1 = search(r"^\d{4}-\d{2}-\d{2}T.*", date) # 2024-12-20T10:23:21+00:00
             if not correct_date1:
                 correct_date2 = search(r"^\d{4}-\d{2}-\d{2}$", date) # 2024-12-20
@@ -172,7 +173,7 @@ class Miappe_validator:
                     if not correct_date3:
                         correct_date4 = search(r"^\d{4}$", date) # 2024
                         if not correct_date4:
-                            self.logs.append(f"CHECK WARNING - The {sheet_name} sheet, *Start date of study column*, row {nrow} is incorrectly formatted.")  
+                            self.logs.append(f"CHECK WARNING - The {sheet_name} sheet, *Start date of study* column*, row {nrow} is incorrectly formatted.")  
 
     def validate_formats(self, sheet_name):
         try:
@@ -186,7 +187,7 @@ class Miappe_validator:
                     # Bellow line not working for vitis because first col in Study sheet is 'Investigation unique ID' instead of ´'Study unique ID')
                     # if len(self.sheet_df.iloc[:, 0].unique()) != len(self.sheet_df.iloc[:, 0]):
                     if len(self.sheet_df['Study unique ID*'].unique()) != len(self.sheet_df['Study unique ID*']):
-                        self.logs.append(f"CHECK FAILED - The {sheet_name} sheet, Study unique ID column, identifiers must be unique.")
+                        self.logs.append(f"CHECK FAILED - The {sheet_name} sheet, *Study unique ID* column, identifiers must be unique.")
                         self.run = False
                     
                     # # Are Dates properly formated?
