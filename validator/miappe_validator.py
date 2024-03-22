@@ -182,13 +182,13 @@ class Miappe_validator:
                     nrow = 0
                     for date in start_date_list:
                         nrow += 1
-                        correct_date1 = search("[0-9]^4-[0-9]^2-[0-9]^2.*", date) # 2024-12-20 T00:00:...
+                        correct_date1 = search(r"^\d{4}-\d{2}-\d{2}T.*", date) # 2024-12-20T10:23:21+00:00
                         if not correct_date1:
-                            correct_date2 = search("[0-9]^4-[0-9]^2-[0-9]^2", date) # 2024-12-20
+                            correct_date2 = search(r"^\d{4}-\d{2}-\d{2}$", date) # 2024-12-20
                             if not correct_date2:
-                                correct_date3 = search("[0-9]^4-[0-9]^2", date) # 2024-12
+                                correct_date3 = search(r"^\d{4}-\d{2}$", date) # 2024-12
                                 if not correct_date3:
-                                    correct_date4 = search("[0-9]^4", date) # 2024
+                                    correct_date4 = search(r"^\d{4}$", date) # 2024
                                     if not correct_date4:
                                         self.logs.append(f"CHECK WARNING - The {sheet_name} sheet, *Start date of study column*, row {nrow} is incorrectly formatted.")         
      
