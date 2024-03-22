@@ -180,7 +180,7 @@ class Miappe_validator:
             if self.filetype == "od":
                 self.sheet_df = self.complete_excel[sheet_name]
                 self.sheet_df = self.sheet_df.dropna(axis='index', how='all')
-                # Checks for Study sheet
+                # Format Checks specific for Study Sheet
                 if sheet_name == "Study":
                     self.logs.append("Its Studying Time")
                     # Are Study IDs unique?
@@ -200,6 +200,7 @@ class Miappe_validator:
      
             else:
                 self.sheet_df = pd.read_excel(self.complete_excel, sheet_name)
+                self.logs.append("STUDY XLSX")
             
             self.logs.append(self.sheet_df)
 
