@@ -174,17 +174,27 @@ class Miappe_validator:
                         self.logs.append(f"CHECK FAILED - The {sheet_name} sheet, Study unique ID column, identifiers must be unique.")
                         self.run = False
                     # Are Dates properly formated?
+                    # Bellow 2 lines not working for vitis because first col in Study sheet is 'Investigation unique ID' instead of ´'Study unique ID')
                     # start_dates_list = self.sheet_df.iloc[:, 4]
                     # end_dates_list = self.sheet_df.iloc[:, 5]
-                    start_dates_list = self.sheet_df['Start date of study*']
+                    start_date_list = self.sheet_df['Start date of study*']
+                    end_date_list = self.sheet_df['End date of study']
                     nrow = 0
-                    for date in start_dates_list:
+                    for date in start_date_list, end_date_list:
                         nrow += 1
-                        correct_date = search("[0-9]^4-[0-9]^2-[0-9]^2", date)
-                        if correct_date:
-                            "do nothing"
-                        else:
-                            self.logs.append(f"CHECK WARNING - The {sheet_name} sheet, *Start date of study column*, row {nrow} is incorrectly formatted.")   
+                        correct_date1 = search("[0-9]^4-[0-9]^2-[0-9]^2.*", date) # 2024-12-20 T00:00:...
+                        if not correct_date1:
+                            correct_date2 = search("[0-9]^4-[0-9]^2-[0-9]^2", date) # 2024-12-20
+                            if not correct_date2:
+                                correct_date3 = search("[0-9]^4-[0-9]^2", date) # 2024-12
+                                if not correct_date3:
+                                    correct_date4 = search("[0-9]^4", date) # 2024
+                                    if not correct_date4:
+                                        self.logs.append(f"CHECK WARNING - The {sheet_name} sheet, *Start date of study column*, row {nrow} is incorrectly formatted.")
+                        
+                            
+                                
+                                       
 
             else:
                 self.sheet_df = pd.read_excel(self.complete_excel, sheet_name)
