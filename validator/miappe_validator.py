@@ -168,16 +168,23 @@ class Miappe_validator:
                 if sheet_name == "Study":
                     self.logs.append("Its Studying Time")
                     # Are Study IDs unique?
-                    # Not working for vitis atm (first column in Study sheet is 'Investigation unique ID' and not ´'Study unique ID')
+                    # Bellow line not working for vitis because first col in Study sheet is 'Investigation unique ID' instead of ´'Study unique ID')
                     # if len(self.sheet_df.iloc[:, 0].unique()) != len(self.sheet_df.iloc[:, 0]):
-                    if len(self.sheet_df['Study unique ID*'].unique()) == len(self.sheet_df['Study unique ID*']):
+                    if len(self.sheet_df['Study unique ID*'].unique()) != len(self.sheet_df['Study unique ID*']):
                         self.logs.append(f"CHECK FAILED - The {sheet_name} sheet, Study unique ID column, identifiers must be unique.")
                         self.run = False
-                    # Are date formats OK?
-                    txt = "Pain"
-                    x = search("^P", txt)
-                    if x:
-                        self.logs.append("Its a match!")
+                    # Are Dates properly formated?
+                    # start_dates_list = self.sheet_df.iloc[:, 4]
+                    # end_dates_list = self.sheet_df.iloc[:, 5]
+                    start_dates_list = self.sheet_df['Start date of study*']
+                    nrow = 0
+                    for date in start_dates_list:
+                        nrow += 1
+                        correct_date = search("[0-9]^4-[0-9]^2-[0-9]^2", date)
+                        if correct_date:
+                            "do nothing"
+                        else:
+                            self.logs.append(f"CHECK WARNING - The {sheet_name} sheet, *Start date of study column*, row {nrow} is incorrectly formatted.")   
 
             else:
                 self.sheet_df = pd.read_excel(self.complete_excel, sheet_name)
