@@ -92,7 +92,7 @@ class Miappe_validator:
             self.sheet_df = self.sheet_df.reset_index(drop=True)
         else:
             self.sheet_df = pd.read_excel(self.complete_excel, self.name_of_similar_sheet(sheet_name))
-            # Remove '*' characters, which indicate mandatory columns to fill
+        # Remove '*' characters, which indicate mandatory columns to fill
         header = [ele.replace('*', '') for ele in list(self.sheet_df)]
         headerMap = {ele: ele.replace('*', '') for ele in list(self.sheet_df)}
         # Removes asterisks from columns of data frame
@@ -141,7 +141,6 @@ class Miappe_validator:
         if 'can_be_empty' in self.valid_structure[sheet_name]:
             if not self.valid_structure[sheet_name]['can_be_empty']:
                 if len(self.sheet_df.index) >= 0 and "mandatory_columns" in self.valid_structure[sheet_name]:
-                    #self.sheet_df.columns =
                     for idx, row in self.sheet_df.iterrows():
                         mandatory_columns = self.valid_structure[sheet_name]["mandatory_columns"]
                         if ((row[mandatory_columns].isna().any() or row[mandatory_columns].eq("").any()) and
@@ -158,29 +157,37 @@ class Miappe_validator:
                     self.logs.append(f"CHECK FAILED - The {sheet_name} Sheet is empty.")
                     self.run = False
 
-    # Work in progress, maybe drop it
-    def validate_dtypes(self, sheet_name):
-        sheet_format = self.sheet_df.dtypes
-        # TODO - (Or not) Doesn't validate if "ODS" format since dataframe is built from nested list
-        if "valid_formats" in self.valid_structure[sheet_name]:
-            # Format 1 - Mandatory fields must have valid formats, while the rest can be empty ('float64')
-            # Format 2 - Rice file
-            # Format 3 - Valid file
-            # Format 4 - Vitis file
-            if str(list(sheet_format)) in self.valid_structure[sheet_name]['valid_formats']:
-                self.logs.append(
-                    f"CHECK PASSED - The {sheet_name} sheet has a valid format (properly formatted fields). Not checked.")
+    # Work in progress
+    def validate_formats(self, sheet_name):
+        try:
+            if self.filetype == "od":
+                self.sheet_df = self.complete_excel[sheet_name]
             else:
-                self.logs.append(
-                    f"CHECK WARNING - The {sheet_name} sheet has invalid formats (some fields are incorrectly formatted). Not checked.")
-                self.run = True
+                self.sheet_df = pd.read_excel(self.complete_excel, sheet_name)
+            
+            self.logs.append(self.sheet_df)
+
+        except ValueError:
+            self.logs.append("CHECK FAILED - The Study sheet cannot be opened.")
+            self.run = False
+
+        # sheet_format = self.sheet_df.dtypes
+        # TODO - (Or not) Doesn't validate if "ODS" format since dataframe is built from nested list
+        # if "valid_formats" in self.valid_structure[sheet_name]:
+            # if str(list(sheet_format)) in self.valid_structure[sheet_name]['valid_formats']:
+                # self.logs.append(
+                    # f"CHECK PASSED - The {sheet_name} sheet has a valid format (properly formatted fields). Not checked.")
+            # else:
+                # self.logs.append(
+                    # f"CHECK WARNING - The {sheet_name} sheet has invalid formats (some fields are incorrectly formatted). Not checked.")
+                # self.run = True
 
     def check_sheet(self, sheet_name):
         try:
 
-            header = self.load_worksheet(sheet_name)
-            self.validate_headers(header, sheet_name)
-            self.validate_dtypes(sheet_name)
+            # header = self.load_worksheet(sheet_name)
+            # self.validate_headers(header, sheet_name)
+            self.validate_formats(sheet_name)
 
         except ValueError:
             self.logs.append(f"CHECK FAILED - The {sheet_name} sheet cannot be opened.")
@@ -263,7 +270,7 @@ class Miappe_validator:
             "CHECK PASSED - The Investigation sheet has valid columns (properly formatted fields).")
 
         except ValueError:
-            self.logs.append("CHECK FAILED - The Study sheet cannot be opened.")
+            self.logs.append("CHECK FAILED - The Investigation sheet cannot be opened.")
             self.run = False
 
     #TODO
