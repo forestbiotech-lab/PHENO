@@ -182,6 +182,9 @@ class Miappe_validator:
                     nrow = 0
                     for date in start_date_list:
                         self.logs.append(date)
+                        correct_date1 = search("[0-9]^4-[0-9]^2-[0-9]^2.*", date) # 2024-12-20 T00:00:...
+                        if correct_date1:
+                            self.logs.append("Yey!")
                     '''
                     for date in start_date_list, end_date_list:
                         nrow += 1
