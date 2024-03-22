@@ -159,10 +159,10 @@ class Miappe_validator:
 
     # Work in progress
     def validate_formats(self, sheet_name):
-        sheet_name = "Investigation"
         try:
             if self.filetype == "od":
                 self.sheet_df = self.complete_excel[sheet_name]
+                self.sheet_df = self.sheet_df.dropna(axis='index', how='all')
             else:
                 self.sheet_df = pd.read_excel(self.complete_excel, sheet_name)
             
