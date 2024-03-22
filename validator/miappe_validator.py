@@ -180,13 +180,7 @@ class Miappe_validator:
                     start_date_list = list(self.sheet_df['Start date of study*'])
                     end_date_list = list(self.sheet_df['End date of study'])
                     nrow = 0
-                    for date in start_date_list, end_date_list:
-                        self.logs.append(date)
-                        correct_date1 = search("[0-9]^4-[0-9]^2-[0-9]^2.*", date) # 2024-12-20 T00:00:...
-                        if correct_date1:
-                            self.logs.append("Yey!")
-                    '''
-                    for date in start_date_list, end_date_list:
+                    for date in start_date_list:
                         nrow += 1
                         correct_date1 = search("[0-9]^4-[0-9]^2-[0-9]^2.*", date) # 2024-12-20 T00:00:...
                         if not correct_date1:
@@ -197,7 +191,7 @@ class Miappe_validator:
                                     correct_date4 = search("[0-9]^4", date) # 2024
                                     if not correct_date4:
                                         self.logs.append(f"CHECK WARNING - The {sheet_name} sheet, *Start date of study column*, row {nrow} is incorrectly formatted.")         
-                    '''        
+     
             else:
                 self.sheet_df = pd.read_excel(self.complete_excel, sheet_name)
             
