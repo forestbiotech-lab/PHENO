@@ -179,6 +179,7 @@ class Miappe_validator:
         try:
             if self.filetype == "od":
                 self.sheet_df = self.complete_excel[sheet_name]
+                # Get rid of rows which are all "None"
                 self.sheet_df = self.sheet_df.dropna(axis='index', how='all')
                 # Format Checks specific for Study Sheet
                 if sheet_name == "Study":
@@ -200,7 +201,7 @@ class Miappe_validator:
      
             else:
                 self.sheet_df = pd.read_excel(self.complete_excel, sheet_name)
-                self.logs.append("STUDY XLSX")
+                self.logs.append("STUDY NOT OD, TODO")
             
             self.logs.append(self.sheet_df)
 
