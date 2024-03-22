@@ -180,7 +180,7 @@ class Miappe_validator:
                     start_date_list = list(self.sheet_df['Start date of study*'])
                     end_date_list = list(self.sheet_df['End date of study'])
                     nrow = 0
-                    for date in start_date_list:
+                    for date in start_date_list, end_date_list:
                         self.logs.append(date)
                         correct_date1 = search("[0-9]^4-[0-9]^2-[0-9]^2.*", date) # 2024-12-20 T00:00:...
                         if correct_date1:
