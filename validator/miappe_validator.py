@@ -178,29 +178,47 @@ class Miappe_validator:
         try:
             if self.filetype == "od":
                 self.sheet_df = self.complete_excel[sheet_name]
-                # Get rid of rows which are all "None"
+                # 0 Investigation ID ...
+                # 1 first row
+            else:
+                self.sheet_df = pd.read_excel(self.complete_excel, sheet_name, header=None)
+                # Investigation ID ...
+                # 0 first row
+                
+            # Get rid of rows which are all "None"
+            self.sheet_df = self.sheet_df.dropna(axis='index', how='all')
+            # Format Checks specific for Study Sheet
+            if sheet_name == "Study":
+                self.logs.append("Its Studying Time")
+                # Are Study IDs unique?
+                # Bellow line not working for vitis because first col in Study sheet is 'Investigation unique ID' instead of 'Study unique ID')
+                # if len(self.sheet_df.iloc[:, 0].unique()) != len(self.sheet_df.iloc[:, 0]):
+                if len(self.sheet_df['Study unique ID*'].unique()) != len(self.sheet_df['Study unique ID*']):
+                    self.logs.append(f"CHECK FAILED - The {sheet_name} sheet, *Study unique ID* column, identifiers must be unique.")
+                    self.run = False
+                    
+                # # Are Dates properly formated?
+                # start_dates_list = list(self.sheet_df.iloc[:, 4]) 
+                date_list = list(self.sheet_df['Start date of study*'][1:])
+                self.validate_dates(sheet_name, "Study", date_list)
+                # end_dates_list = list(self.sheet_df.iloc[:, 5])
+                date_list = list(self.sheet_df['End date of study'][1:])
+                self.validate_dates(sheet_name, "Study", date_list)
+
+
+                # Get rid of rows which are all "NaN"
                 self.sheet_df = self.sheet_df.dropna(axis='index', how='all')
                 # Format Checks specific for Study Sheet
                 if sheet_name == "Study":
-                    self.logs.append("Its Studying Time")
+                    self.logs.append("Its Studying Time NOT OD")
                     # Are Study IDs unique?
                     # Bellow line not working for vitis because first col in Study sheet is 'Investigation unique ID' instead of 'Study unique ID')
                     # if len(self.sheet_df.iloc[:, 0].unique()) != len(self.sheet_df.iloc[:, 0]):
                     if len(self.sheet_df['Study unique ID*'].unique()) != len(self.sheet_df['Study unique ID*']):
                         self.logs.append(f"CHECK FAILED - The {sheet_name} sheet, *Study unique ID* column, identifiers must be unique.")
                         self.run = False
-                    
-                    # # Are Dates properly formated?
-                    # start_dates_list = list(self.sheet_df.iloc[:, 4]) 
-                    date_list = list(self.sheet_df['Start date of study*'][1:])
-                    self.validate_dates(sheet_name, "Study", date_list)
-                    # end_dates_list = list(self.sheet_df.iloc[:, 5])
-                    date_list = list(self.sheet_df['End date of study'][1:])
-                    self.validate_dates(sheet_name, "Study", date_list)
-     
-            else:
-                self.sheet_df = pd.read_excel(self.complete_excel, sheet_name)
-                self.logs.append("Its Studying Time NOT OD")
+
+
                 self.logs.append(self.sheet_df)
             
         except ValueError:
@@ -330,7 +348,6 @@ class Miappe_validator:
                 if self.run and sheet in self.valid_structure:
                     self.check_sheet(sheet)
 
-        # Write miappe_validator_logs file:
         # Append File is Valid if self.run reaches the end as True
         if self.run == True:
             self.logs.append(" - THE INPUT FILE IS VALID - ")
