@@ -196,9 +196,8 @@ class Miappe_validator:
                 # 0 First row
                 # 1 Second row
 
-            # Get rid of rows/columns which are empty (all "None" or "NaN")
+            # Get rid of empty rows (all "None" or "NaN")
             self.sheet_df = self.sheet_df.dropna(axis='index', how='all')
-            self.sheet_df = self.sheet_df.dropna(axis='columns', how='all')
             # Format Checks specific for Study Sheet
             if sheet_name == "Study":
                 self.logs.append("Its Studying Time")
