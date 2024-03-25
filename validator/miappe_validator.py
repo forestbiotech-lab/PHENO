@@ -183,7 +183,7 @@ class Miappe_validator:
                 # 1 First row
                 # 2 Second row
                 self.sheet_df = self.sheet_df.iloc[1:]
-                self.sheet_df.reset_index(drop=True)
+                self.sheet_df.reset_index(drop=True, inplace=True)
                 # Investigation ID ...
                 # 0 First row
                 # 1 Second row
