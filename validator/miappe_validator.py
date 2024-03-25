@@ -178,6 +178,7 @@ class Miappe_validator:
         try:
             if self.filetype == "od":
                 self.sheet_df = self.complete_excel[sheet_name]
+                self.logs.append(self.sheet_df)
                 # 0 Investigation ID ...
                 # 1 first row
             else:
