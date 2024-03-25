@@ -187,11 +187,9 @@ class Miappe_validator:
                 # Investigation ID ...
                 # 0 First row
                 # 1 Second row
-                self.logs.append(self.sheet_df)
                 
             else:
                 self.sheet_df = pd.read_excel(self.complete_excel, sheet_name)
-                self.logs.append(self.sheet_df)
                 # Investigation ID ...
                 # 0 First row
                 # 1 Second row
@@ -200,7 +198,6 @@ class Miappe_validator:
             self.sheet_df = self.sheet_df.dropna(axis='index', how='all')
             # Format Checks specific for Study Sheet
             if sheet_name == "Study":
-                self.logs.append("Its Studying Time")
                 # Are Study IDs unique?
                 # Bellow line not working for vitis because first col in Study sheet is 'Investigation unique ID' instead of 'Study unique ID')
                 # if len(self.sheet_df.iloc[:, 0].unique()) != len(self.sheet_df.iloc[:, 0]):
@@ -215,8 +212,6 @@ class Miappe_validator:
                 # end_dates_list = list(self.sheet_df.iloc[:, 5])
                 date_list = list(self.sheet_df['End date of study'][1:])
                 self.validate_dates(sheet_name, "Study", date_list)
-
-                self.logs.append(self.sheet_df)
           
         except ValueError:
             self.logs.append("CHECK FAILED - The Study sheet cannot be opened.")
