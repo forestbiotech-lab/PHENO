@@ -233,8 +233,8 @@ class Miappe_validator:
     def check_sheet(self, sheet_name):
         try:
 
-            # header = self.load_worksheet(sheet_name)
-            # self.validate_headers(header, sheet_name)
+            header = self.load_worksheet(sheet_name)
+            self.validate_headers(header, sheet_name)
             self.validate_formats(sheet_name)
 
         except ValueError:
@@ -314,16 +314,11 @@ class Miappe_validator:
                 self.logs.append("CHECK FAILED - The Investigation sheet has an invalid header (column name/number).")
                 self.run = False
 
-            self.logs.append(
-            "CHECK PASSED - The Investigation sheet has valid columns (properly formatted fields).")
+            self.logs.append("CHECK PASSED - The Investigation sheet has every mandatory column filled.")
 
         except ValueError:
             self.logs.append("CHECK FAILED - The Investigation sheet cannot be opened.")
             self.run = False
-
-    #TODO
-    #Check mandatory columns are filled (already checked in Investigation, check for the other ones)
-    # Maybe check column formats, dtypes abandoned, because format needs to be informative of the column
 
     # The input file should end in .xlsx, .xls or .ods
     # Additional excel-like files which may be considered (older versions): .xlsm; .xlsb; .xml;
