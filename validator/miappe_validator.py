@@ -181,7 +181,7 @@ class Miappe_validator:
                 # 0 Investigation ID ...
                 # 1 first row
             else:
-                self.sheet_df = pd.read_excel(self.complete_excel, sheet_name, header=None)
+                self.sheet_df = pd.read_excel(self.complete_excel, sheet_name, header=None, index_col=False)
                 self.logs.append(self.sheet_df)
                 # Investigation ID ...
                 # 0 first row
