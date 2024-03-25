@@ -209,13 +209,11 @@ class Miappe_validator:
                 # start_dates_list = list(self.sheet_df.iloc[:, 4]) 
                 date_list = list(self.sheet_df['Start date of study*'][1:])
                 date_list = [str(date) for date in date_list]
-                self.logs.append(date_list)
-                #self.validate_dates(sheet_name, "Study", date_list)
+                self.validate_dates(sheet_name, "Study", date_list)
                 # end_dates_list = list(self.sheet_df.iloc[:, 5])
                 date_list = list(self.sheet_df['End date of study'][1:])
                 date_list = [str(date) for date in date_list]
-                self.logs.append(date_list)
-                #self.validate_dates(sheet_name, "Study", date_list)
+                self.validate_dates(sheet_name, "Study", date_list)
           
         except ValueError:
             self.logs.append("CHECK FAILED - The Study sheet cannot be opened.")
