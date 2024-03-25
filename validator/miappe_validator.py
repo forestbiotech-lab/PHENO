@@ -207,11 +207,11 @@ class Miappe_validator:
                 self.validate_dates(sheet_name, "Study", date_list)
 
                 self.logs.append(self.sheet_df)
-            
+'''           
         except ValueError:
             self.logs.append("CHECK FAILED - The Study sheet cannot be opened.")
             self.run = False
-'''
+
         # sheet_format = self.sheet_df.dtypes
         # TODO - (Or not) Doesn't validate if "ODS" format since dataframe is built from nested list
         # if "valid_formats" in self.valid_structure[sheet_name]:
