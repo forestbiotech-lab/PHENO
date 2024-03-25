@@ -182,9 +182,10 @@ class Miappe_validator:
                 # 1 first row
             else:
                 self.sheet_df = pd.read_excel(self.complete_excel, sheet_name, header=None)
+                self.logs.append(self.sheet_df)
                 # Investigation ID ...
                 # 0 first row
-                
+            '''
             # Get rid of rows which are all "None"
             self.sheet_df = self.sheet_df.dropna(axis='index', how='all')
             # Format Checks specific for Study Sheet
@@ -205,26 +206,12 @@ class Miappe_validator:
                 date_list = list(self.sheet_df['End date of study'][1:])
                 self.validate_dates(sheet_name, "Study", date_list)
 
-
-                # Get rid of rows which are all "NaN"
-                self.sheet_df = self.sheet_df.dropna(axis='index', how='all')
-                # Format Checks specific for Study Sheet
-                if sheet_name == "Study":
-                    self.logs.append("Its Studying Time NOT OD")
-                    # Are Study IDs unique?
-                    # Bellow line not working for vitis because first col in Study sheet is 'Investigation unique ID' instead of 'Study unique ID')
-                    # if len(self.sheet_df.iloc[:, 0].unique()) != len(self.sheet_df.iloc[:, 0]):
-                    if len(self.sheet_df['Study unique ID*'].unique()) != len(self.sheet_df['Study unique ID*']):
-                        self.logs.append(f"CHECK FAILED - The {sheet_name} sheet, *Study unique ID* column, identifiers must be unique.")
-                        self.run = False
-
-
                 self.logs.append(self.sheet_df)
             
         except ValueError:
             self.logs.append("CHECK FAILED - The Study sheet cannot be opened.")
             self.run = False
-
+'''
         # sheet_format = self.sheet_df.dtypes
         # TODO - (Or not) Doesn't validate if "ODS" format since dataframe is built from nested list
         # if "valid_formats" in self.valid_structure[sheet_name]:
