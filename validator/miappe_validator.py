@@ -160,11 +160,10 @@ class Miappe_validator:
 
     # Work in progress
           
-    def validate_dates(self, sheet_name, date_list):        
+    def validate_dates(self, sheet_name, column, date_list):        
         nrow = 0
         for date in date_list:
             nrow += 1
-            self.logs.append(date)
             correct_date1 = search(r"^\d{4}-\d{2}-\d{2}T.*", date) # 2024-12-20T10:23:21+00:00
             if not correct_date1:
                 correct_date2 = search(r"^\d{4}-\d{2}-\d{2}$", date) # 2024-12-20
@@ -173,7 +172,7 @@ class Miappe_validator:
                     if not correct_date3:
                         correct_date4 = search(r"^\d{4}$", date) # 2024
                         if not correct_date4:
-                            self.logs.append(f"CHECK WARNING - The {sheet_name} sheet, *Start date of study* column*, row {nrow} is incorrectly formatted.")  
+                            self.logs.append(f"CHECK WARNING - The {sheet_name} sheet, *{column}* column, row {nrow} is incorrectly formatted.")  
 
     def validate_formats(self, sheet_name):
         try:
@@ -185,7 +184,7 @@ class Miappe_validator:
                 if sheet_name == "Study":
                     self.logs.append("Its Studying Time")
                     # Are Study IDs unique?
-                    # Bellow line not working for vitis because first col in Study sheet is 'Investigation unique ID' instead of ´'Study unique ID')
+                    # Bellow line not working for vitis because first col in Study sheet is 'Investigation unique ID' instead of 'Study unique ID')
                     # if len(self.sheet_df.iloc[:, 0].unique()) != len(self.sheet_df.iloc[:, 0]):
                     if len(self.sheet_df['Study unique ID*'].unique()) != len(self.sheet_df['Study unique ID*']):
                         self.logs.append(f"CHECK FAILED - The {sheet_name} sheet, *Study unique ID* column, identifiers must be unique.")
@@ -194,17 +193,16 @@ class Miappe_validator:
                     # # Are Dates properly formated?
                     # start_dates_list = list(self.sheet_df.iloc[:, 4]) 
                     date_list = list(self.sheet_df['Start date of study*'][1:])
-                    self.validate_dates(sheet_name, date_list)
+                    self.validate_dates(sheet_name, "Study", date_list)
                     # end_dates_list = list(self.sheet_df.iloc[:, 5])
                     date_list = list(self.sheet_df['End date of study'][1:])
-                    self.validate_dates(sheet_name, date_list)
+                    self.validate_dates(sheet_name, "Study", date_list)
      
             else:
                 self.sheet_df = pd.read_excel(self.complete_excel, sheet_name)
-                self.logs.append("STUDY NOT OD, TODO")
+                self.logs.append("Its Studying Time NOT OD")
+                self.logs.append(self.sheet_df)
             
-            self.logs.append(self.sheet_df)
-
         except ValueError:
             self.logs.append("CHECK FAILED - The Study sheet cannot be opened.")
             self.run = False
