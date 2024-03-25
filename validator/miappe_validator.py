@@ -178,14 +178,19 @@ class Miappe_validator:
         try:
             if self.filetype == "od":
                 self.sheet_df = self.complete_excel[sheet_name]
-                self.logs.append(self.sheet_df)
+                # Investigation ID ...
                 # 0 Investigation ID ...
-                # 1 first row
+                # 1 First row
+                # 2 Second row
+                self.sheet_df = self.sheet_df.iloc[1:]
+                self.logs.append(self.sheet_df)
+                
             else:
-                self.sheet_df = pd.read_excel(self.complete_excel, sheet_name, header=None, index_col=False)
+                self.sheet_df = pd.read_excel(self.complete_excel, sheet_name)
                 self.logs.append(self.sheet_df)
                 # Investigation ID ...
-                # 0 first row
+                # 0 First row
+                # 1 Second row
             '''
             # Get rid of rows which are all "None"
             self.sheet_df = self.sheet_df.dropna(axis='index', how='all')
