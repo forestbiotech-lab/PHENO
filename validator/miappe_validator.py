@@ -160,11 +160,10 @@ class Miappe_validator:
 
     # Work in progress
           
-    def validate_dates(self, sheet_name, date_list):        
+    def validate_dates(self, sheet_name, column, date_list):        
         nrow = 0
         for date in date_list:
             nrow += 1
-            self.logs.append(date)
             correct_date1 = search(r"^\d{4}-\d{2}-\d{2}T.*", date) # 2024-12-20T10:23:21+00:00
             if not correct_date1:
                 correct_date2 = search(r"^\d{4}-\d{2}-\d{2}$", date) # 2024-12-20
@@ -173,38 +172,49 @@ class Miappe_validator:
                     if not correct_date3:
                         correct_date4 = search(r"^\d{4}$", date) # 2024
                         if not correct_date4:
-                            self.logs.append(f"CHECK WARNING - The {sheet_name} sheet, *Start date of study* column*, row {nrow} is incorrectly formatted.")  
+                            self.logs.append(f"CHECK WARNING - The {sheet_name} sheet, *{column}* column, row {nrow} is incorrectly formatted.")  
 
     def validate_formats(self, sheet_name):
         try:
             if self.filetype == "od":
                 self.sheet_df = self.complete_excel[sheet_name]
-                # Get rid of rows which are all "None"
-                self.sheet_df = self.sheet_df.dropna(axis='index', how='all')
-                # Format Checks specific for Study Sheet
-                if sheet_name == "Study":
-                    self.logs.append("Its Studying Time")
-                    # Are Study IDs unique?
-                    # Bellow line not working for vitis because first col in Study sheet is 'Investigation unique ID' instead of ´'Study unique ID')
-                    # if len(self.sheet_df.iloc[:, 0].unique()) != len(self.sheet_df.iloc[:, 0]):
-                    if len(self.sheet_df['Study unique ID*'].unique()) != len(self.sheet_df['Study unique ID*']):
-                        self.logs.append(f"CHECK FAILED - The {sheet_name} sheet, *Study unique ID* column, identifiers must be unique.")
-                        self.run = False
-                    
-                    # # Are Dates properly formated?
-                    # start_dates_list = list(self.sheet_df.iloc[:, 4]) 
-                    date_list = list(self.sheet_df['Start date of study*'][1:])
-                    self.validate_dates(sheet_name, date_list)
-                    # end_dates_list = list(self.sheet_df.iloc[:, 5])
-                    date_list = list(self.sheet_df['End date of study'][1:])
-                    self.validate_dates(sheet_name, date_list)
-     
+                # Investigation ID ...
+                # 0 Investigation ID ...
+                # 1 First row
+                # 2 Second row
+                self.sheet_df = self.sheet_df.iloc[1:]
+                self.sheet_df.reset_index(drop=True, inplace=True)
+                # Investigation ID ...
+                # 0 First row
+                # 1 Second row
+                
             else:
                 self.sheet_df = pd.read_excel(self.complete_excel, sheet_name)
-                self.logs.append("STUDY NOT OD, TODO")
-            
-            self.logs.append(self.sheet_df)
+                # Investigation ID ...
+                # 0 First row
+                # 1 Second row
 
+            # Get rid of empty rows (all "None" or "NaN")
+            self.sheet_df = self.sheet_df.dropna(axis='index', how='all')
+            # Format Checks specific for Study Sheet
+            if sheet_name == "Study":
+                # Are Study IDs unique?
+                # Bellow line not working for vitis because first col in Study sheet is 'Investigation unique ID' instead of 'Study unique ID')
+                # if len(self.sheet_df.iloc[:, 0].unique()) != len(self.sheet_df.iloc[:, 0]):
+                if len(self.sheet_df['Study unique ID*'].unique()) != len(self.sheet_df['Study unique ID*']):
+                    self.logs.append(f"CHECK FAILED - The {sheet_name} sheet, *Study unique ID* column, identifiers must be unique.")
+                    self.run = False
+                    
+                # # Are Dates properly formated?
+                # start_dates_list = list(self.sheet_df.iloc[:, 4]) 
+                date_list = list(self.sheet_df['Start date of study*'][1:])
+                date_list = [str(date) for date in date_list]
+                self.validate_dates(sheet_name, "Study", date_list)
+                # end_dates_list = list(self.sheet_df.iloc[:, 5])
+                date_list = list(self.sheet_df['End date of study'][1:])
+                date_list = [str(date) for date in date_list]
+                self.validate_dates(sheet_name, "Study", date_list)
+          
         except ValueError:
             self.logs.append("CHECK FAILED - The Study sheet cannot be opened.")
             self.run = False
@@ -223,8 +233,8 @@ class Miappe_validator:
     def check_sheet(self, sheet_name):
         try:
 
-            # header = self.load_worksheet(sheet_name)
-            # self.validate_headers(header, sheet_name)
+            header = self.load_worksheet(sheet_name)
+            self.validate_headers(header, sheet_name)
             self.validate_formats(sheet_name)
 
         except ValueError:
@@ -304,16 +314,11 @@ class Miappe_validator:
                 self.logs.append("CHECK FAILED - The Investigation sheet has an invalid header (column name/number).")
                 self.run = False
 
-            self.logs.append(
-            "CHECK PASSED - The Investigation sheet has valid columns (properly formatted fields).")
+            self.logs.append("CHECK PASSED - The Investigation sheet has every mandatory column filled.")
 
         except ValueError:
             self.logs.append("CHECK FAILED - The Investigation sheet cannot be opened.")
             self.run = False
-
-    #TODO
-    #Check mandatory columns are filled (already checked in Investigation, check for the other ones)
-    # Maybe check column formats, dtypes abandoned, because format needs to be informative of the column
 
     # The input file should end in .xlsx, .xls or .ods
     # Additional excel-like files which may be considered (older versions): .xlsm; .xlsb; .xml;
@@ -332,7 +337,6 @@ class Miappe_validator:
                 if self.run and sheet in self.valid_structure:
                     self.check_sheet(sheet)
 
-        # Write miappe_validator_logs file:
         # Append File is Valid if self.run reaches the end as True
         if self.run == True:
             self.logs.append(" - THE INPUT FILE IS VALID - ")
