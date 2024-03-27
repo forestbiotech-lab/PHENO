@@ -4,7 +4,7 @@
     "pass": "dba",
     "host": "db",
     "port": "8890",
-    "ontoBrAPIgraph": "http://localhost:8890/ontobrapi"
+    "ontoBrAPIgraph": "http://brapi.biodata.pt/staging#"
   },
   "validator": {
     "hostname": "validator",
@@ -16,5 +16,12 @@
     "database": "brapi",
     "user": "root",
     "password": "password"
+  },
+  "admin": {
+    "protocol": "http",
+    "hostname": "192.168.1.7",
+    "port": 3000,
+    "path": "/admin/brapi/dataset/submit/",
+    "method": "POST"
   }
 }
