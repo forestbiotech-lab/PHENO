@@ -176,26 +176,6 @@ class Miappe_validator:
 
     def validate_formats(self, sheet_name):
         try:
-            self.logs.append(sheet_name)
-            self.logs.append(self.sheet_df)
-            if self.filetype == "od":
-                self.sheet_df = self.complete_excel[sheet_name]
-                # Investigation ID ...
-                # 0 Investigation ID ...
-                # 1 First row
-                # 2 Second row
-                self.sheet_df = self.sheet_df.iloc[1:]
-                self.sheet_df.reset_index(drop=True, inplace=True)
-                # Investigation ID ...
-                # 0 First row
-                # 1 Second row
-                
-            else:
-                self.sheet_df = pd.read_excel(self.complete_excel, sheet_name)
-                # Investigation ID ...
-                # 0 First row
-                # 1 Second row
-
             # Get rid of empty rows (all "None" or "NaN")
             self.sheet_df = self.sheet_df.dropna(axis='index', how='all')
             # Format Checks specific for Study Sheet
@@ -203,13 +183,13 @@ class Miappe_validator:
                 # Are Study IDs unique?
                 # Bellow line not working for vitis because first col in Study sheet is 'Investigation unique ID' instead of 'Study unique ID')
                 # if len(self.sheet_df.iloc[:, 0].unique()) != len(self.sheet_df.iloc[:, 0]):
-                if len(self.sheet_df['Study unique ID*'].unique()) != len(self.sheet_df['Study unique ID*']):
+                if len(self.sheet_df['Study unique ID'].unique()) != len(self.sheet_df['Study unique ID']):
                     self.logs.append(f"CHECK FAILED - The {sheet_name} sheet, *Study unique ID* column, identifiers must be unique.")
                     self.run = False
                     
                 # # Are Dates properly formated?
                 # start_dates_list = list(self.sheet_df.iloc[:, 4]) 
-                date_list = list(self.sheet_df['Start date of study*'][1:])
+                date_list = list(self.sheet_df['Start date of study'][1:])
                 date_list = [str(date) for date in date_list]
                 self.validate_dates(sheet_name, "Start date of study", date_list)
                 # end_dates_list = list(self.sheet_df.iloc[:, 5])
