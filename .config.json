@@ -1,10 +1,15 @@
 {
+  "access_point": {
+    "comment": "Provides a uniform why to convert urls in KGs to the local service running",
+    "external": "http://localhost:3001"
+  },
   "sparql": {
     "user": "dba",
     "pass": "dba",
     "host": "db",
     "port": "8890",
-    "ontoBrAPIgraph": "http://brapi.biodata.pt/staging#"
+    "ontoBrAPIgraph": "http://brapi.biodata.pt/staging#",
+    "ontoBrAPI": "http://brapi.biodata.pt"	
   },
   "validator": {
     "hostname": "validator",
