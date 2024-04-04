@@ -103,7 +103,7 @@ class Miappe_validator:
     # Checks if headers are valid
     def validate_headers(self, header, sheet_name):
         if "valid_header1" in self.valid_structure[sheet_name]:
-            if (header == self.valid_structure[sheet_name]['valid_header1']:
+            if header == self.valid_structure[sheet_name]['valid_header1']:
                 self.logs.append(f'CHECK PASSED - The {sheet_name} sheet has a valid header (column name/number).')
                 self.validate_data(sheet_name)
 
