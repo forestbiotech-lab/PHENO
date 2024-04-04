@@ -102,19 +102,18 @@ class Miappe_validator:
 
     # Checks if headers are valid
     def validate_headers(self, header, sheet_name):
-        if "valid_header1" in self.valid_structure[sheet_name] and "valid_header2" in self.valid_structure[sheet_name]:
-            if (header == self.valid_structure[sheet_name]['valid_header1'] or
-                    header == self.valid_structure[sheet_name]['valid_header2']):
+        if "valid_header1" in self.valid_structure[sheet_name]:
+            if (header == self.valid_structure[sheet_name]['valid_header1']:
                 self.logs.append(f'CHECK PASSED - The {sheet_name} sheet has a valid header (column name/number).')
                 self.validate_data(sheet_name)
 
-            elif "valid_header3" in self.valid_structure[sheet_name]:
-                if header == self.valid_structure[sheet_name]['valid_header3'] and sheet_name == "Person":
+            elif "valid_header2" in self.valid_structure[sheet_name]:
+                if header == self.valid_structure[sheet_name]['valid_header2'] and sheet_name == "Person":
                     ###### Person specific??????
                     # Delete first column and then first three rows of the person dataframe
                     self.sheet_df.drop(["Definition", "Example", "Format"], axis=0, inplace=True)
                     self.sheet_df.drop("Field", axis=1, inplace=True)
-                    if header == self.valid_structure[sheet_name]['valid_header3']:
+                    if header == self.valid_structure[sheet_name]['valid_header2']:
                         # Is used in Study for vitis exception which will be removed.
                         self.logs.append(f'CHECK PASSED - The {sheet_name} sheet has a valid header (column name/number).')
                         self.validate_data(sheet_name)
@@ -126,7 +125,7 @@ class Miappe_validator:
                     # Checks that are not none from first column
                     if( self.sheet_df.iloc[:,0][self.sheet_df.iloc[:,0].notna()] == self.valid_structure["Investigation"]['valid_header1'] ):
                         self.logs("Investigation is transposed")
-                elif header == self.valid_structure[sheet_name]['valid_header3']:
+                elif header == self.valid_structure[sheet_name]['valid_header2']:
                     self.logs.append(f'CHECK PASSED - The {sheet_name} sheet has a valid header (column name/number).')
                     self.validate_data(sheet_name)
                 else:
