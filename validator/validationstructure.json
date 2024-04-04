@@ -102,9 +102,6 @@
     "valid_header2" : [
       "Study unique ID", "Experimental Factor type","Experimental Factor description", "Experimental Factor values"
     ],
-    "valid_header3" : [
-      "Field", "Value", "Definition", "Example", "Format"
-    ],
     "can_be_empty":true,
     "mandatory_columns":["Study unique ID","Factor type","Factor values"]
   }, 
