@@ -13,6 +13,7 @@
     "mandatory_columns":["Investigation unique ID","Investigation title","Investigation description","MIAPPE version"]
   }, 
   "Study":{
+    "commentary": "valid header 1 is based on miappe checklist, outdated",
     "valid_header1" : ["Study unique ID", "Study title", "Study description", "Start date of study",
                                "End date of study", "Contact institution", "Geographic location (country)",
                                "Experimental site name", "Geographic location (latitude)",
@@ -79,11 +80,6 @@
     "valid_header3" : [
       "Field", "Value"
     ],
-    "valid_formats" : [
-      "[dtype('O'), dtype('O'), dtype('O'), dtype('float64'), dtype('float64'), dtype('float64'), dtype('float64'), dtype('float64'), dtype('float64'), dtype('float64'), dtype('float64'), dtype('float64'), dtype('float64'), dtype('float64'), dtype('float64'), dtype('float64'), dtype('float64')]",
-      "[dtype('O'), dtype('O'), dtype('O'), dtype('O'), dtype('O'), dtype('float64'), dtype('float64'), dtype('O'), dtype('float64'), dtype('float64'), dtype('O'), dtype('O'), dtype('float64'), dtype('float64'), dtype('float64'), dtype('float64'), dtype('O')]",
-      "[dtype('O'), dtype('O'), dtype('O'), dtype('O'), dtype('O'), dtype('float64'), dtype('float64'), dtype('O'), dtype('float64'), dtype('float64'), dtype('O'), dtype('float64'), dtype('float64'), dtype('float64'), dtype('float64'), dtype('float64'), dtype('O')]",
-      "[dtype('O'), dtype('O'), dtype('O'), dtype('O'), dtype('O'), dtype('float64'), dtype('float64'), dtype('float64'), dtype('O'), dtype('O'), dtype('float64'), dtype('float64'), dtype('float64'), dtype('float64'), dtype('float64'), dtype('float64'), dtype('float64')]"],
     "can_be_empty":false,
     "mandatory_columns":["Study unique ID","Biological material ID","Organism"]
   }, 
