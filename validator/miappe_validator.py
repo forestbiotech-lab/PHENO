@@ -19,6 +19,7 @@ class Miappe_validator:
         self.sheet_df = None
         self.valid_sheets = None
         self.invalid_sheets = None
+        self.transposed = False
         self.valid_structure = json.load(open("validationstructure.json"))
         self.logs = ["  --- OntoBrAPI - Input File Validity Report ---  "]
         self.run = True
@@ -122,9 +123,16 @@ class Miappe_validator:
                             f"CHECK FAILED - The {sheet_name} sheet has an invalid header (column name/number).")
                         self.run = False
                 elif sheet_name == "Investigation":
+                    # Checks if sheet is transposed
                     # Checks that are not none from first column
-                    if( self.sheet_df.iloc[:,0][self.sheet_df.iloc[:,0].notna()] == self.valid_structure["Investigation"]['valid_header1'] ):
-                        self.logs("Investigation is transposed")
+                    header = [ele.replace('*', '') for ele in self.sheet_df.iloc[:, 0].dropna()]
+                    if header == self.valid_structure[sheet_name]['valid_header1']:
+                        self.transposed = True
+                        self.logs.append(
+                            f'CHECK PASSED - The {sheet_name} sheet has a valid header (column name/number).')
+                    else:
+                        self.logs.append("CHECK FAILED - The Investigation sheet has incorrect names in the Field.")
+                        self.run = False
                 elif header == self.valid_structure[sheet_name]['valid_header2']:
                     self.logs.append(f'CHECK PASSED - The {sheet_name} sheet has a valid header (column name/number).')
                     self.validate_data(sheet_name)
@@ -141,18 +149,34 @@ class Miappe_validator:
         if 'can_be_empty' in self.valid_structure[sheet_name]:
             if not self.valid_structure[sheet_name]['can_be_empty']:
                 if len(self.sheet_df.index) >= 0 and "mandatory_columns" in self.valid_structure[sheet_name]:
-                    for idx, row in self.sheet_df.iterrows():
-                        mandatory_columns = self.valid_structure[sheet_name]["mandatory_columns"]
-                        if ((row[mandatory_columns].isna().any() or row[mandatory_columns].eq("").any()) and
-                                (not row[mandatory_columns].isna().all())):
-                            mandatory_column = []
-                            if row[mandatory_columns].eq("").any():
-                                mandatory_column+= list(row[mandatory_columns][row[mandatory_columns].eq("")].index)
-                            if row[mandatory_columns].isna().any():
-                                mandatory_column+= list(row[mandatory_columns][row[mandatory_columns].isna()].index)
-                            self.logs.append(
-                                            f"CHECK FAILED - The *{'* *'.join(mandatory_column)}* column ({sheet_name} sheet) is mandatory in line {idx+1}.")
+                    if(self.transposed == True and sheet_name == "Investigation"):
+                        if pd.isna(self.sheet_df.iloc[1, 1]) == True:
+                            self.logs.append("CHECK FAILED - The Investigation ID* (Investigation sheet) is required.")
                             self.run = False
+                        if pd.isna(self.sheet_df.iloc[2, 1]) == True:
+                            self.logs.append(
+                                "CHECK FAILED - The Investigation Title* (Investigation sheet) is required.")
+                            self.run = False
+                        if pd.isna(self.sheet_df.iloc[3, 1]) == True:
+                            self.logs.append(
+                                "CHECK FAILED - The Investigation Description* (Investigation sheet) is required.")
+                            self.run = False
+                        if pd.isna(self.sheet_df.iloc[7, 1]) == True:
+                            self.logs.append("CHECK FAILED - The MIAPPE Version* (Investigation sheet) is required.")
+                            self.run = False
+                    else:
+                        for idx, row in self.sheet_df.iterrows():
+                            mandatory_columns = self.valid_structure[sheet_name]["mandatory_columns"]
+                            if ((row[mandatory_columns].isna().any() or row[mandatory_columns].eq("").any()) and
+                                    (not row[mandatory_columns].isna().all())):
+                                mandatory_column = []
+                                if row[mandatory_columns].eq("").any():
+                                    mandatory_column+= list(row[mandatory_columns][row[mandatory_columns].eq("")].index)
+                                if row[mandatory_columns].isna().any():
+                                    mandatory_column+= list(row[mandatory_columns][row[mandatory_columns].isna()].index)
+                                self.logs.append(
+                                                f"CHECK FAILED - The *{'* *'.join(mandatory_column)}* column ({sheet_name} sheet) is mandatory in line {idx+1}.")
+                                self.run = False
                 else:
                     self.logs.append(f"CHECK FAILED - The {sheet_name} Sheet is empty.")
                     self.run = False
@@ -216,105 +240,25 @@ class Miappe_validator:
 
             header = self.load_worksheet(sheet_name)
             self.validate_headers(header, sheet_name)
+            self.validate_data(sheet_name)
             self.validate_formats(sheet_name)
 
         except ValueError:
             self.logs.append(f"CHECK FAILED - The {sheet_name} sheet cannot be opened.")
             self.run = False
 
-    #  -  Check Investigation Sheet  -
-    def CheckInvestigationSheet(self):
-        # self.logs.append("investigation" + str(datetime.now() - startTime))
-        # Check Investigation Sheet Header
-        try:
-            sheet_name = "Investigation"
-            if self.filetype == "od":
-                self.sheet_df = self.complete_excel[sheet_name]
-            else:
-                self.sheet_df = pd.read_excel(self.complete_excel, sheet_name)
-                
-            # Remove '*' characters, which indicate mandatory columns to fill
-            investigation_header = [ele.replace('*', '') for ele in list(self.sheet_df)]
-
-            valid_investigation_header1 = ["Investigation unique ID", "Investigation title", "Investigation description",
-                                          "Submission date", "Public release date", "License", "MIAPPE version",
-                                          "Associated publication"]
-            valid_investigation_header2 = ["Field", "Value", "Definition", "Example", "Format"]
-            valid_investigation_header3 = ["Field", "Value"]
-
-            # Normal Header
-            if investigation_header == valid_investigation_header1:
-                self.logs.append("CHECK PASSED - The Investigation sheet has a valid header (column name/number).")
-
-                # valid_investigation_formats_dic = {1: ["dtype('O')"], 2: "dtype('O')", 3: "dtype('O')", 4: ["dtype('<M8[ns]')", "dtype('float64')"],
-                #                                  5: ["dtype('<M8[ns]')", "dtype('float64')"], 6: ["dtype('O')", "dtype('float64')"],
-                #                                  7: ["dtype('O')", "dtype('float64')"], 8: ["dtype('O')", "dtype('float64')"]}
-                
-                # investigation_format = self.sheet_df.dtypes
-                #self.logs.append(investigation_format)
-                
-                # Checks if mandatory columns have values (at least in the first position)
-                if pd.isna(self.sheet_df.iloc[0, 0]) == True:
-                    self.logs.append("CHECK FAILED - The Investigation ID* (Investigation sheet) is required.")
-                    self.run = False
-                if pd.isna(self.sheet_df.iloc[0,1]) == True:
-                    self.logs.append("CHECK FAILED - The Investigation Title* (Investigation sheet) is required.")
-                    self.run = False
-                if pd.isna(self.sheet_df.iloc[0,2]) == True:
-                    self.logs.append("CHECK FAILED - The Investigation Description* (Investigation sheet) is required.")
-                    self.run = False
-                if pd.isna(self.sheet_df.iloc[0,6]) == True:
-                    self.logs.append("CHECK FAILED - The MIAPPE version* (Investigation sheet) is required.")
-                    self.run = False
-
-            # This means that the Excel is the template from MIAPPE Github (or modified by user to keep only two first columns)
-            elif investigation_header == valid_investigation_header2 or investigation_header == valid_investigation_header3:
-                # Check if Rows are well named
-                if self.sheet_df.iloc[1:, 0] == valid_investigation_header1:
-                    self.logs.append("CHECK PASSED - The Investigation sheet has a valid header (column name/number).")
-                else:
-                    self.logs.append("CHECK FAILED - The Investigation sheet has incorrect names in the Field.")
-                    self.run = False
-
-                # The transposed version Original Github
-                # Check if mandatory fields within Investigation sheet exist (not NaN)
-                if pd.isna(self.sheet_df.iloc[1,1]) == True:
-                    self.logs.append("CHECK FAILED - The Investigation ID* (Investigation sheet) is required.")
-                    self.run = False
-                if pd.isna(self.sheet_df.iloc[2,1]) == True:
-                    self.logs.append("CHECK FAILED - The Investigation Title* (Investigation sheet) is required.")
-                    self.run = False
-                if pd.isna(self.sheet_df.iloc[3,1]) == True:
-                    self.logs.append("CHECK FAILED - The Investigation Description* (Investigation sheet) is required.")
-                    self.run = False
-                if pd.isna(self.sheet_df.iloc[7,1]) == True:
-                    self.logs.append("CHECK FAILED - The MIAPPE Version* (Investigation sheet) is required.")
-                    self.run = False
-
-            else: 
-                self.logs.append("CHECK FAILED - The Investigation sheet has an invalid header (column name/number).")
-                self.run = False
-
-            self.logs.append("CHECK PASSED - The Investigation sheet has every mandatory column filled.")
-
-        except ValueError:
-            self.logs.append("CHECK FAILED - The Investigation sheet cannot be opened.")
-            self.run = False
 
     # The input file should end in .xlsx, .xls or .ods
     # Additional excel-like files which may be considered (older versions): .xlsm; .xlsb; .xml;
     # .xltx; .xlt; .xltm; .xlam; .xlc; xld; .xlk; .xlw; .xlr.
-            
     def run_miappe_validator(self):
 
         if self.run == True:
             self.check_input_file()
-        if self.run == True:
-            self.CheckInvestigationSheet()
 
-        # Skip Investigation and Data Value
+        # Skip Data Value
         if self.run:
-            for sheet in list(self.sheetsList)[1:-1]:
+            for sheet in list(self.sheetsList)[:-1]:
                 if self.run and sheet in self.valid_structure:
                     self.check_sheet(sheet)
 
