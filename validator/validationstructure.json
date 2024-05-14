@@ -13,7 +13,7 @@
     "mandatory_columns":["Investigation unique ID","Investigation title","Investigation description","MIAPPE version"]
   }, 
   "Study":{
-    "valid_header1" : ["Investigation unique ID", "Study unique ID", "Study title", "Study description",
+    "valid_header1" : ["Study unique ID", "Study title", "Study description",
                                "Start date of study", "End date of study", "Contact institution",
                                "Geographic location (country)", "Experimental site name", "Geographic location (latitude)",
                                "Geographic location (longitude)", "Geographic location (altitude)",
@@ -21,7 +21,7 @@
                                "Observation unit level hierarchy", "Observation unit description",
                                "Description of growth facility", "Type of growth facility", "Cultural practices",
                                "Map of experimental design"],
-    "valid_header2" : ["Field", "Investigation unique ID", "Study unique ID", "Study title",
+    "valid_header2" : ["Field", "Study unique ID", "Study title",
                                 "Study description", "Start date of study", "End date of study", "Contact institution",
                                "Geographic location (country)", "Experimental site name", "Geographic location (latitude)",
                                "Geographic location (longitude)", "Geographic location (altitude)",
@@ -31,7 +31,7 @@
                                "Map of experimental design"],
     "can_be_empty":false,
     "mandatory_columns":[
-    "Investigation unique ID","Study unique ID","Study title", "Start date of study", "Contact institution", 
+    "Study unique ID","Study title", "Start date of study", "Contact institution",
     "Geographic location (country)", "Experimental site name", "Description of statistical design",
     "Observation unit description", "Description of growth facility"
     ]
