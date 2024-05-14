@@ -123,7 +123,7 @@ class Miappe_validator:
                             f"CHECK FAILED - The {sheet_name} sheet has an invalid header (column name/number).")
                         self.run = False
                 elif sheet_name == "Investigation":
-                    # Checks if sheet is transposed
+                    # Checks if sheet is transposed, which is the correct version to prevent filling more than 1 Investigation
                     # Checks that are not none from first column
                     header = [ele.replace('*', '') for ele in self.sheet_df.iloc[:, 0].dropna()]
                     if header == self.valid_structure[sheet_name]['valid_header1']:
