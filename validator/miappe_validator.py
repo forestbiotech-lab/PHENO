@@ -52,23 +52,24 @@ class Miappe_validator:
         valid_sheet_names = list(self.valid_structure.keys())
         # Check the number of input sheet names that are valid or not
         self.valid_sheets = [sheet for sheet in self.sheetsList if sheet in valid_sheet_names]
-        if len(self.valid_sheets) < (len(valid_sheet_names[:-1]) -1 ) and ("Exp. Factor" in self.valid_sheets and "Factor" in self.valid_sheets): # It's [:1] to ignore Data value, and -1 because Factor/Exp. Factor redundancy
-            self.invalid_sheets = [sheet for sheet in self.sheetsList if sheet not in valid_sheet_names ]
+        if len(self.valid_sheets) < (len(valid_sheet_names[:-1]) - 1) and (
+                "Exp. Factor" in self.valid_sheets and "Factor" in self.valid_sheets):  # It's [:1] to ignore Data value, and -1 because Factor/Exp. Factor redundancy
+            self.invalid_sheets = [sheet for sheet in self.sheetsList if sheet not in valid_sheet_names]
             self.logs.append(
-                    "CHECK FAILED - The input file has " + str(len(self.valid_sheets)) + 
-                    " valid input sheets, which is less than the minimum 11 valid sheets required: Investigation, Study, Person, Data file, Biological Material, Sample, Observation Unit, Environment, Factor/Exp. Factor, Observed Variable, Event")
+                "CHECK FAILED - The input file has " + str(len(self.valid_sheets)) +
+                " valid input sheets, which is less than the minimum 11 valid sheets required: Investigation, Study, Person, Data file, Biological Material, Sample, Observation Unit, Environment, Factor/Exp. Factor, Observed Variable, Event")
             self.logs.append(
                 f"CHECK FAILED - The input file has {len(self.invalid_sheets)} " +
-                     f"invalid input worksheets. Correct the worksheet &lt;&lt;{'&gt;&gt;, &lt;&lt;'.join(self.invalid_sheets)}&gt;&gt;")
+                f"invalid input worksheets. Correct the worksheet &lt;&lt;{'&gt;&gt;, &lt;&lt;'.join(self.invalid_sheets)}&gt;&gt;")
 
             self.run = False
         else:
-            if len(self.sheetsList) >= (len(valid_sheet_names[:-1]) -1 ):
+            if len(self.sheetsList) >= (len(valid_sheet_names[:-1]) - 1):
                 self.logs.append(
-                    f"CHECK PASSED - The input file has the minimum required {(len(valid_sheet_names[:-1]) -1 )} valid sheet names.")
+                    f"CHECK PASSED - The input file has the minimum required {(len(valid_sheet_names[:-1]) - 1)} valid sheet names.")
             else:
                 self.logs.append(
-                    "CHECK WARNING - The input file has " + str(len(self.sheetsList)) + 
+                    "CHECK WARNING - The input file has " + str(len(self.sheetsList)) +
                     " sheets, which is more than the minimum 11 valid sheets required. Additional sheets may be discarded.")
 
     # Deprecation not really feasible since the usage of difernte worksheet name will cause problems with mapping
@@ -82,7 +83,7 @@ class Miappe_validator:
                     table = str.maketrans(" ", "_")
                     sheet_name = sheet_name.lower().translate(table)
                     return self.sheetsList[[idx for idx, sheet in enumerate(self.sheetsList) if "_" in sheet and
-                                                 sheet.lower().translate(table) == sheet_name][0]]
+                                            sheet.lower().translate(table) == sheet_name][0]]
             except ValueError:
                 # Defers the error
                 return sheet_name
@@ -116,7 +117,8 @@ class Miappe_validator:
                     self.sheet_df.drop("Field", axis=1, inplace=True)
                     if header == self.valid_structure[sheet_name]['valid_header2']:
                         # Is used in Study for vitis exception which will be removed.
-                        self.logs.append(f'CHECK PASSED - The {sheet_name} sheet has a valid header (column name/number).')
+                        self.logs.append(
+                            f'CHECK PASSED - The {sheet_name} sheet has a valid header (column name/number).')
                         self.validate_data(sheet_name)
                     else:
                         self.logs.append(
@@ -149,7 +151,7 @@ class Miappe_validator:
         if 'can_be_empty' in self.valid_structure[sheet_name]:
             if not self.valid_structure[sheet_name]['can_be_empty']:
                 if len(self.sheet_df.index) >= 0 and "mandatory_columns" in self.valid_structure[sheet_name]:
-                    if(self.transposed == True and sheet_name == "Investigation"):
+                    if (self.transposed == True and sheet_name == "Investigation"):
                         if pd.isna(self.sheet_df.iloc[1, 1]) == True:
                             self.logs.append("CHECK FAILED - The Investigation ID* (Investigation sheet) is required.")
                             self.run = False
@@ -171,31 +173,34 @@ class Miappe_validator:
                                     (not row[mandatory_columns].isna().all())):
                                 mandatory_column = []
                                 if row[mandatory_columns].eq("").any():
-                                    mandatory_column+= list(row[mandatory_columns][row[mandatory_columns].eq("")].index)
+                                    mandatory_column += list(
+                                        row[mandatory_columns][row[mandatory_columns].eq("")].index)
                                 if row[mandatory_columns].isna().any():
-                                    mandatory_column+= list(row[mandatory_columns][row[mandatory_columns].isna()].index)
+                                    mandatory_column += list(
+                                        row[mandatory_columns][row[mandatory_columns].isna()].index)
                                 self.logs.append(
-                                                f"CHECK FAILED - The *{'* *'.join(mandatory_column)}* column ({sheet_name} sheet) is mandatory in line {idx+1}.")
+                                    f"CHECK FAILED - The *{'* *'.join(mandatory_column)}* column ({sheet_name} sheet) is mandatory in line {idx + 1}.")
                                 self.run = False
                 else:
                     self.logs.append(f"CHECK FAILED - The {sheet_name} Sheet is empty.")
                     self.run = False
 
     # Work in progress
-          
-    def validate_dates(self, sheet_name, column, date_list):        
+
+    def validate_dates(self, sheet_name, column, date_list):
         nrow = 0
         for date in date_list:
             nrow += 1
-            correct_date1 = search(r"^\d{4}-\d{2}-\d{2}T.*", date) # 2024-12-20T10:23:21+00:00
+            correct_date1 = search(r"^\d{4}-\d{2}-\d{2}T.*", date)  # 2024-12-20T10:23:21+00:00
             if not correct_date1:
-                correct_date2 = search(r"^\d{4}-\d{2}-\d{2}$", date) # 2024-12-20
+                correct_date2 = search(r"^\d{4}-\d{2}-\d{2}$", date)  # 2024-12-20
                 if not correct_date2:
-                    correct_date3 = search(r"^\d{4}-\d{2}$", date) # 2024-12
+                    correct_date3 = search(r"^\d{4}-\d{2}$", date)  # 2024-12
                     if not correct_date3:
-                        correct_date4 = search(r"^\d{4}$", date) # 2024
+                        correct_date4 = search(r"^\d{4}$", date)  # 2024
                         if not correct_date4:
-                            self.logs.append(f"CHECK WARNING - The {sheet_name} sheet, *{column}* column, row {nrow} is incorrectly formatted.")  
+                            self.logs.append(
+                                f"CHECK WARNING - The {sheet_name} sheet, *{column}* column, row {nrow} is incorrectly formatted.")
 
     def validate_formats(self, sheet_name):
         try:
@@ -207,9 +212,10 @@ class Miappe_validator:
                 # Bellow line not working for vitis because first col in Study sheet is 'Investigation unique ID' instead of 'Study unique ID')
                 # if len(self.sheet_df.iloc[:, 0].unique()) != len(self.sheet_df.iloc[:, 0]):
                 if len(self.sheet_df['Study unique ID'].unique()) != len(self.sheet_df['Study unique ID']):
-                    self.logs.append(f"CHECK FAILED - The {sheet_name} sheet, *Study unique ID* column, identifiers must be unique.")
+                    self.logs.append(
+                        f"CHECK FAILED - The {sheet_name} sheet, *Study unique ID* column, identifiers must be unique.")
                     self.run = False
-                    
+
                 # # Are Dates properly formated?
                 # start_dates_list = list(self.sheet_df.iloc[:, 4]) 
                 date_list = list(self.sheet_df['Start date of study'][1:])
@@ -219,7 +225,7 @@ class Miappe_validator:
                 date_list = list(self.sheet_df['End date of study'][1:])
                 date_list = [str(date) for date in date_list]
                 self.validate_dates(sheet_name, "End date of study", date_list)
-          
+
         except ValueError:
             self.logs.append("CHECK FAILED - The Study sheet cannot be opened.")
             self.run = False
@@ -227,13 +233,13 @@ class Miappe_validator:
         # sheet_format = self.sheet_df.dtypes
         # TODO - (Or not) Doesn't validate if "ODS" format since dataframe is built from nested list
         # if "valid_formats" in self.valid_structure[sheet_name]:
-            # if str(list(sheet_format)) in self.valid_structure[sheet_name]['valid_formats']:
-                # self.logs.append(
-                    # f"CHECK PASSED - The {sheet_name} sheet has a valid format (properly formatted fields). Not checked.")
-            # else:
-                # self.logs.append(
-                    # f"CHECK WARNING - The {sheet_name} sheet has invalid formats (some fields are incorrectly formatted). Not checked.")
-                # self.run = True
+        # if str(list(sheet_format)) in self.valid_structure[sheet_name]['valid_formats']:
+        # self.logs.append(
+        # f"CHECK PASSED - The {sheet_name} sheet has a valid format (properly formatted fields). Not checked.")
+        # else:
+        # self.logs.append(
+        # f"CHECK WARNING - The {sheet_name} sheet has invalid formats (some fields are incorrectly formatted). Not checked.")
+        # self.run = True
 
     def check_sheet(self, sheet_name):
         try:
@@ -247,13 +253,12 @@ class Miappe_validator:
             self.logs.append(f"CHECK FAILED - The {sheet_name} sheet cannot be opened.")
             self.run = False
 
-
     # The input file should end in .xlsx, .xls or .ods
     # Additional excel-like files which may be considered (older versions): .xlsm; .xlsb; .xml;
     # .xltx; .xlt; .xltm; .xlam; .xlc; xld; .xlk; .xlw; .xlr.
     def run_miappe_validator(self):
 
-        if self.run == True:
+        if self.run:
             self.check_input_file()
 
         # Skip Data Value
@@ -263,7 +268,7 @@ class Miappe_validator:
                     self.check_sheet(sheet)
 
         # Append File is Valid if self.run reaches the end as True
-        if self.run == True:
+        if self.run:
             self.logs.append(" - THE INPUT FILE IS VALID - ")
         else:
             self.logs.append(" - THE INPUT FILE IS INVALID - ")
