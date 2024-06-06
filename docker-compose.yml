@@ -30,13 +30,13 @@ services:
       - "admin"
 
   web:
-    build: ./ontoBrAPI-node-docker
+    build: ./ontobrapi-web
     ports:
       - "3002:3000"
     volumes:
       - ./.config.json:/usr/src/app/.config.json
       - ./uploads:/usr/src/app/uploads   
-      - ./.git/modules/ontoBrAPI-node-docker/FETCH_HEAD:/usr/src/app/.FETCH_HEAD
+      - ./.git/modules/ontobrapi-web/FETCH_HEAD:/usr/src/app/.FETCH_HEAD
     depends_on:
       - db
       - validator
