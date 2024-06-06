@@ -1,24 +1,23 @@
-# Welcome to OntoBrAPI
-![OntoBrAPI logo](https://github.com/forestbiotech-lab/ontoBrAPI-node-docker/blob/master/public/images/logo.png)
+# Welcome to Pheno
+![OntoBrAPI logo](https://github.com/forestbiotech-lab/ontoBrAPI-node-docker/blob/master/public/images/pheno.png)
 
 # Index
-- [What is OntoBrAPI?](README.md#what-is-ontobrapi-1)
-- [How to setup OntoBrAPI locally?](README.md#how-to-setup-ontobrapi-locally-1)
+- [What is Pheno?](README.md#what-is-pheno-1)
+- [How to setup PHENO locally?](README.md#how-to-setup-pheno-locally-1)
 - [SparQL](README.md#sparql)
 - [Instance requirements](README.md#instance-requirements)
 
 
-# What is OntoBrAPI?
-OntoBrAPI has 3 main functions based on international standards:
+# What is PHENO?
+PHENO has 3 main functions based on international standards:
 - Data submission (MIAPPE)
 - Data storage (RDF)
 - Data sharing (BrAPI)
 
 For more details check out OntoBrAPI's [documentation](https://ontobrapi-docs.readthedocs.io/) on READ the DOCS
 
-
-### 1) Data submission
-OntoBrAPI runs on a web server, which provides a Graphical User Interface (GUI) that allows the conversion of the MIAPPE spreadsheet into n-triples format. The GUI allows the user to dynamically map the MIAPPE spreadsheet to the appropriate PPEO ontological properties using a JavaScript Object Notation (JSON). The user can also start from an initial mapping in JSON and adjust any fields deemed necessary. The GUI uses the constraints coded in the ontology to validate the mapping. As an example, the data types allowed for each of the data properties is enforced by the GUI, which are inherited from the rules in the ontology; the same goes for the object properties that can link classes and the data properties that can annotate classes.
+### 1) Data submission (OntoBrAPI)
+OntoBrAPI runs a web server, which provides a Graphical User Interface (GUI) that allows the conversion of the MIAPPE spreadsheet into n-triples format. The GUI allows the user to dynamically map the MIAPPE spreadsheet to the appropriate PPEO ontological properties using a JavaScript Object Notation (JSON). The user can also start from an initial mapping in JSON and adjust any fields deemed necessary. The GUI uses the constraints coded in the ontology to validate the mapping. As an example, the data types allowed for each of the data properties is enforced by the GUI, which are inherited from the rules in the ontology; the same goes for the object properties that can link classes and the data properties that can annotate classes.
 
 ### 2) Data Storage 
 OntoBrAPI relies on [OpenLink Virtuoso](https://docs.openlinksw.com/virtuoso/) to store triples and builds a management system for data curators to validate datasets and select which ones are ready for sharing.
@@ -27,11 +26,7 @@ OntoBrAPI relies on [OpenLink Virtuoso](https://docs.openlinksw.com/virtuoso/) t
 OntoBrAPI provides a BrAPI endpoint which delivers data in the triple store as JSON. This module allows administrators to update the data properties mapped to the respective JSON output in acordance with the [BrAPI specification](https://brapi.org/specification). 
 
 
-
-
-
-
-# How to setup OntoBrAPI locally?
+# How to setup PHENO locally?
 
 Since OntoBrAPI relies on several external components, it's designed as a collection of individual Docker containers. This approach, facilitated by [Docker Compose](https://docs.docker.com/compose/), simplifies the setup process.
 
