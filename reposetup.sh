@@ -4,14 +4,14 @@ set -e
 cd
 mkdir git
 cd git
-git clone https://github.com/forestbiotech-lab/ontoBrAPI.git
-cd ontoBrAPI
+git clone https://github.com/forestbiotech-lab/PHENO.git
+cd PHENO
 git submodule init
-git submodule set-url ontoBrAPI-node-docker  https://github.com/forestbiotech-lab/ontoBrAPI-node-docker.git
+git submodule set-url ontobrapi-web  https://github.com/forestbiotech-lab/ontobrapi-web.git
 git submodule set-url ontobrapi-admin  https://github.com/forestbiotech-lab/ontobrapi-admin.git
 git submodule set-url ontobrapi-brapi  https://github.com/forestbiotech-lab/ontobrapi-brapi.git
 git submodule update
-cd ontoBrAPI-node-docker
+cd ontobrapi-web
 git checkout master
 git pull origin master
 cd ../ontobrapi-admin
