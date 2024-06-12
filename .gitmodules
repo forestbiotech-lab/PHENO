@@ -1,4 +1,4 @@
-[submodule "ontoBrAPI-node-docker"]
+[submodule "ontobrapi-web"]
 	path = ontobrapi-web
 	url = https://github.com/forestbiotech-lab/ontobrapi-web.git
 [submodule "ontobrapi-admin"]
