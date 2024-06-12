@@ -50,7 +50,7 @@ sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
 
 #Login to USERNAME and finish install
 
-sudo wget https://raw.githubusercontent.com/forestbiotech-lab/ontoBrAPI/master/reposetup.sh -O /home/${USERNAME}/reposetup.sh
+sudo wget https://raw.githubusercontent.com/forestbiotech-lab/PHENO/master/reposetup.sh -O /home/${USERNAME}/reposetup.sh
 sudo chown ${USERNAME}:${USERNAME} /home/${USERNAME}/reposetup.sh
 sudo chmod 777 /home/${USERNAME}/reposetup.sh
 sudo --user ${USERNAME} /home/${USERNAME}/./reposetup.sh

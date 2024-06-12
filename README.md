@@ -41,7 +41,7 @@ The dependencies will be installed by running this script on a Ubuntu system.
 - [compose](https://docs.docker.com/compose/)
   
 ```
-wget https://github.com/forestbiotech-lab/ontoBrAPI/raw/master/setup.sh -O setup.sh
+wget https://github.com/forestbiotech-lab/PHENO/raw/master/setup.sh -O setup.sh
 bash setup.sh 
 ```
 
