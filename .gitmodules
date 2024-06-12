@@ -1,6 +1,6 @@
 [submodule "ontoBrAPI-node-docker"]
 	path = ontobrapi-web
-	url = git@github.com:forestbiotech-lab/ontobrapi-web.git
+	url = https://github.com/forestbiotech-lab/ontobrapi-web.git
 [submodule "ontobrapi-admin"]
 	branch = main
 	path = ontobrapi-admin
