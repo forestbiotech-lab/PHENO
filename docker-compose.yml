@@ -48,6 +48,7 @@ services:
         - "3003:3000"
       volumes:
         - ./.config.json/:/usr/src/app/.config.json
+        - ./.git/modules/ontobrapi-admin/FETCH_HEAD:/usr/src/app/.FETCH_HEAD
       depends_on:
         - db
         - mongo
