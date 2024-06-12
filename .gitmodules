@@ -1,6 +1,6 @@
 [submodule "ontobrapi-web"]
 	path = ontobrapi-web
-	url = https://github.com/forestbiotech-lab/ontobrapi-web.git
+	url = git@github.com:forestbiotech-lab/ontobrapi-web.git
 [submodule "ontobrapi-admin"]
 	branch = main
 	path = ontobrapi-admin
