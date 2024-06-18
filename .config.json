@@ -9,7 +9,8 @@
     "host": "db",
     "port": "8890",
     "ontoBrAPIgraph": "http://brapi.biodata.pt/staging#",
-    "ontoBrAPI": "http://brapi.biodata.pt"	
+    "ontoBrAPI": "http://brapi.biodata.pt",	
+    "baseOntologyURI":"http://purl.org/ppeo/PPEO.owl#"
   },
   "validator": {
     "hostname": "validator",
