@@ -21,8 +21,13 @@ git checkout master
 cd ..
 git submodule sync
 
-sed -ri "s:3001\:80:80\:80:g" docker-compose.yml
+sed -ri "s:3001\:80:80\:80\"\n      - \"443\:443\":g" docker-compose.yml
+sed -r "s:server_name localhost:server_name brapi.biodata.pt:g" nginx/conf.d/services.conf
 
 docker-compose up -d
+docker-compose exec gatekeeper apt update
+docker-compose exec gatekeeper apt install python3-certbot-nginx -y
+docker-compose exec gatekeeper certbot --agree-tos --eff-email -m brunovasquescosta@gmail.com -d brapi.biodata.pt
+
 
 exit 0
