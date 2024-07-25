@@ -16,8 +16,10 @@ git checkout master
 git pull origin master
 cd ../ontobrapi-admin
 git checkout main
+git pull origin main
 cd ../ontobrapi-brapi
 git checkout master
+git pull origin master
 cd ..
 git submodule sync
 

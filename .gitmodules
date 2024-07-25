@@ -9,3 +9,6 @@
 	path = ontobrapi-brapi
 	url = git@github.com:forestbiotech-lab/ontobrapi-brapi.git
 	branch = master
+[submodule "docs"]
+	path = docs
+	url = https://github.com/hmrodrigues99/PHENO_Docs
