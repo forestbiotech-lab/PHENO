@@ -169,15 +169,16 @@ class Miappe_validator:
                     else:
                         for idx, row in self.sheet_df.iterrows():
                             mandatory_columns = self.valid_structure[sheet_name]["mandatory_columns"]
-                            if ((row[mandatory_columns].isna().any() or row[mandatory_columns].eq("").any()) and
-                                    (not row[mandatory_columns].isna().all())):
+                            #if ((row[mandatory_columns].isna().any() or row[mandatory_columns].eq("").any()) and
+                                    #(not row[mandatory_columns].isna().all())):
+                            if ((row[mandatory_columns].eq("").any()) and (not row[mandatory_columns].all())):
                                 mandatory_column = []
                                 if row[mandatory_columns].eq("").any():
                                     mandatory_column += list(
                                         row[mandatory_columns][row[mandatory_columns].eq("")].index)
-                                if row[mandatory_columns].isna().any():
-                                    mandatory_column += list(
-                                        row[mandatory_columns][row[mandatory_columns].isna()].index)
+                                #if row[mandatory_columns].isna().any():
+                                #    mandatory_column += list(
+                                #        row[mandatory_columns][row[mandatory_columns].isna()].index)
                                 self.logs.append(
                                     f"CHECK FAILED - The *{'* *'.join(mandatory_column)}* column ({sheet_name} sheet) is mandatory in line {idx + 1}.")
                                 self.run = False
