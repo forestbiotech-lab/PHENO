@@ -55,6 +55,18 @@ services:
       networks:
         - backend
 
+  brapi:  
+      build: ./ontobrapi-brapi
+      ports:
+        - "3004:3000"
+      volumes:
+        - ./.config.json/:/usr/src/app/.config.json
+        - ./.git/modules/ontobrapi-brapi/FETCH_HEAD:/usr/src/app/.FETCH_HEAD
+      depends_on:
+        - mongo
+      networks:
+        - backend
+
   validator:
      build: ./validator
      ports:
