@@ -37,6 +37,7 @@ class Miappe_validator:
                 # open docs
                 self.filetype = "od"
                 ods = get_data(input_file)
+                ##TODO This is might not be setting empty cells different from NA text
                 self.complete_excel = {key: pd.DataFrame(ods[key], columns=ods[key][0]) for key in ods.keys()}
                 self.sheetsList = self.complete_excel.keys()
             else:
@@ -94,7 +95,8 @@ class Miappe_validator:
             self.sheet_df = self.complete_excel[sheet_name].drop(0)
             self.sheet_df = self.sheet_df.reset_index(drop=True)
         else:
-            self.sheet_df = pd.read_excel(self.complete_excel, self.name_of_similar_sheet(sheet_name))
+            self.sheet_df = pd.read_excel(self.complete_excel, self.name_of_similar_sheet(sheet_name),
+                                          keep_default_na=False, na_values=["Na", "NA"])
         # Remove '*' characters, which indicate mandatory columns to fill
         header = [ele.replace('*', '') for ele in list(self.sheet_df)]
         headerMap = {ele: ele.replace('*', '') for ele in list(self.sheet_df)}
@@ -169,7 +171,8 @@ class Miappe_validator:
                     else:
                         for idx, row in self.sheet_df.iterrows():
                             mandatory_columns = self.valid_structure[sheet_name]["mandatory_columns"]
-                            if ((row[mandatory_columns].isna().any() or row[mandatory_columns].eq("").any()) and
+                            # Check if any the values in the mandatory columns is empty and ensure they are not all
+                            if ((row[mandatory_columns].eq("").any()) and
                                     (not row[mandatory_columns].isna().all())):
                                 mandatory_column = []
                                 if row[mandatory_columns].eq("").any():
