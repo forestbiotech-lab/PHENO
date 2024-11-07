@@ -81,7 +81,7 @@
     "valid_header2" : ["Field", "Study unique ID", "Observation unit ID", "Observation unit type", "External ID", "Spatial distribution",
                                     "Observation Unit factor value"],
     "can_be_empty":false,
-    "mandatory_columns":["Study unique ID","Biological Material ID","Observation unit ID", "Observation unit type"]
+    "mandatory_columns":["Study unique ID","Biological material ID","Observation unit ID", "Observation unit type"]
   }, 
   "Environment":{
     "valid_header1" : ["Study unique ID", "Environment parameter", "Environment parameter value"],
