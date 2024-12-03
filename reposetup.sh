@@ -23,7 +23,7 @@ git pull origin master
 cd ..
 git submodule sync
 
-sed -ri "s:3001\:80:80\:80\"\n      - \"443\:443\":g" docker-compose.yml
+sed -ri "s:3001\:80:80\:80\"\n      - \"443\:443:g" docker-compose.yml
 sed -r "s:server_name localhost:server_name brapi.biodata.pt:g" nginx/conf.d/services.conf
 
 docker-compose up -d
