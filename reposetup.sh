@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -e 
 
+echo -n DOMAIN:
+read DOMAIN
+
 cd
 mkdir git
 cd git
@@ -29,7 +32,7 @@ sed -r "s:server_name localhost:server_name brapi.biodata.pt:g" nginx/conf.d/ser
 docker-compose up -d
 docker-compose exec gatekeeper apt update
 docker-compose exec gatekeeper apt install python3-certbot-nginx -y
-docker-compose exec gatekeeper certbot --agree-tos --eff-email -m brunovasquescosta@gmail.com -d brapi.biodata.pt
+docker-compose exec gatekeeper certbot --agree-tos --eff-email -m brunovasquescosta@gmail.com -d ${DOMAIN}
 
 
 exit 0
